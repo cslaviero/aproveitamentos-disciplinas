@@ -1,0 +1,17 @@
+body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+.disciplina {
+  background: #fff; padding: 15px; margin-bottom: 20px;
+  border: 1px solid #ccc; border-radius: 8px;
+}
+label { display: block; margin-top: 10px; }
+input, select {
+  width: 100%; padding: 6px; margin-top: 4px;
+  box-sizing: border-box;
+}
+button {
+  padding: 8px 14px; font-size: 14px; margin-top: 10px;
+  cursor: pointer;
+}
+.ies-externa {
+  display: none;
+}
