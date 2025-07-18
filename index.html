@@ -66,30 +66,30 @@
 
     // Popular selects disciplina-aproveitar com dados do disciplinas.json
     async function popularSelectDisciplina() {
-      try {
-        const response = await fetch('disciplinas.json');
-        const disciplinasJSON = await response.json();
+  try {
+    const response = await fetch('disciplinas.json');
+    const disciplinasJSON = await response.json();
 
-        const selects = document.querySelectorAll(".disciplina-aproveitar");
+    const selects = document.querySelectorAll(".disciplina-aproveitar");
 
-        selects.forEach(select => {
-          select.innerHTML = <option value="">Selecione</option>;
-          disciplinasJSON.forEach(d => {
-            const option = document.createElement("option");
-            option.value = d.codigo;
-            option.textContent = ${d.codigo} - ${d.nome};
-            select.appendChild(option);
-          });
-        });
-      } catch (error) {
-        console.error("Erro ao carregar disciplinas.json:", error);
-        // Caso dê erro, deixa a opção padrão
-        const selects = document.querySelectorAll(".disciplina-aproveitar");
-        selects.forEach(select => {
-          select.innerHTML = <option value="">Erro ao carregar disciplinas</option>;
-        });
-      }
-    }
+    selects.forEach(select => {
+      select.innerHTML = `<option value="">Selecione</option>`;
+      disciplinasJSON.forEach(d => {
+        const option = document.createElement("option");
+        option.value = d.codigo;
+        option.textContent = `${d.codigo} - ${d.nome}`;
+        select.appendChild(option);
+      });
+    });
+  } catch (error) {
+    console.error("Erro ao carregar disciplinas.json:", error);
+    const selects = document.querySelectorAll(".disciplina-aproveitar");
+    selects.forEach(select => {
+      select.innerHTML = `<option value="">Erro ao carregar disciplinas</option>`;
+    });
+  }
+}
+
 
     // Adicionar nova disciplina (clona o primeiro bloco e reseta valores)
     function addDisciplina() {
@@ -125,7 +125,7 @@
 
         // Cabeçalho em negrito
         doc.setFont("helvetica", "bold");
-        doc.text(Disciplina ${i + 1}:, 10, y);
+        doc.text(`Disciplina ${i + 1}:`, 10, y);
         y += lineHeight;
 
         doc.text("IES", 10, y);
