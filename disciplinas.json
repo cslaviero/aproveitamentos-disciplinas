@@ -228,20 +228,5 @@
         "codigo": "114200344",
         "nome": "Teoria da Computação",
         "carga_horaria": "64h"
-    }, 
-    {
-        "codigo": "",
-        "nome": "Optativa I",
-        "carga_horaria": "64h"
-    }, 
-    {
-        "codigo": "",
-        "nome": "Optativa II",
-        "carga_horaria": "64h"
-    }, 
-    {
-        "codigo": "",
-        "nome": "Optativa III (EAD)",
-        "carga_horaria": "64h"
     }
 ]
