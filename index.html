@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <title>Aproveitamento de Estudos</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <h2>Solicitação de Aproveitamento de Estudos</h2>
@@ -18,7 +17,7 @@
           <option value="Externa">Externa</option>
         </select>
       </label>
-      <label class="ies-externa">
+      <label class="ies-externa" style="display:none;">
         Qual instituição?
         <input type="text" class="ies-outra" placeholder="Nome da instituição" />
       </label>
@@ -35,9 +34,18 @@
       <label>Nota:
         <input type="text" class="nota" placeholder="Ex: 8.5" />
       </label>
+
+      <label>Tipo de disciplina a aproveitar:
+        <select class="tipo-disciplina" onchange="carregarDisciplinasPorTipo(this)">
+          <option value="">Selecione</option>
+          <option value="obrigatoria">Obrigatória</option>
+          <option value="optativa">Optativa</option>
+        </select>
+      </label>
+
       <label>Disciplina a aproveitar:
         <select class="disciplina-aproveitar" onchange="atualizarDisciplina(this)">
-          <option value="">Carregando...</option>
+          <option value="">Selecione o tipo primeiro</option>
         </select>
       </label>
       <label>Código da a aproveitar:
@@ -49,160 +57,209 @@
   <button onclick="addDisciplina()">Adicionar outra disciplina</button>
   <button onclick="gerarPDF()">Gerar PDF</button>
 
-  <script>
-    function mostrarCampoIES(select) {
-      const externaDiv = select.parentElement.parentElement.querySelector(".ies-externa");
-      if (select.value === "Externa") {
-        externaDiv.style.display = "block";
-      } else {
-        externaDiv.style.display = "none";
-        externaDiv.querySelector("input").value = "";
-      }
+<script>
+  function mostrarCampoIES(select) {
+    const externaDiv = select.parentElement.parentElement.querySelector(".ies-externa");
+    if (select.value === "Externa") {
+      externaDiv.style.display = "block";
+    } else {
+      externaDiv.style.display = "none";
+      externaDiv.querySelector("input").value = "";
+    }
+  }
+
+  function atualizarDisciplina(select) {
+    const inputCodigo = select.parentElement.parentElement.querySelector(".codigo-aproveitar");
+    inputCodigo.value = select.value;
+  }
+
+  function addDisciplina() {
+    const container = document.getElementById("disciplinas");
+    const nova = container.firstElementChild.cloneNode(true);
+    // Limpa inputs e selects
+    nova.querySelectorAll("input").forEach(input => input.value = "");
+    nova.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
+    nova.querySelector(".ies-externa").style.display = "none";
+    container.appendChild(nova);
+  }
+
+  async function carregarDisciplinasPorTipo(selectTipo) {
+    const tipo = selectTipo.value;
+    const container = selectTipo.parentElement.parentElement;
+    const selectDisciplina = container.querySelector(".disciplina-aproveitar");
+    selectDisciplina.innerHTML = '<option>Carregando...</option>';
+
+    if (!tipo) {
+      selectDisciplina.innerHTML = '<option>Selecione o tipo primeiro</option>';
+      return;
     }
 
-    function atualizarDisciplina(select) {
-      const inputCodigo = select.parentElement.parentElement.querySelector(".codigo-aproveitar");
-      inputCodigo.value = select.value;
+    let url = '';
+    if (tipo === 'obrigatoria') {
+      url = 'disciplinas_obrigatorias.json';
+    } else if (tipo === 'optativa') {
+      url = 'disciplinas_optativas.json';
     }
 
-    function addDisciplina() {
-      const container = document.getElementById("disciplinas");
-      const nova = container.firstElementChild.cloneNode(true);
-      nova.querySelectorAll("input").forEach(input => input.value = "");
-      nova.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
-      nova.querySelector(".ies-externa").style.display = "none";
-      container.appendChild(nova);
-    }
+    try {
+      const response = await fetch(url);
+      const disciplinas = await response.json();
 
-    async function gerarPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-
-      const disciplinas = document.querySelectorAll(".disciplina");
-      let y = 15;
-      const lineHeight = 5;
-      const pageHeight = 280;
-
-      doc.setFontSize(7);
-
-      disciplinas.forEach((d, i) => {
-        if (y + 35 > pageHeight) {
-          doc.addPage();
-          y = 15;
-        }
-
-        doc.setFont("helvetica", "bold");
-        doc.text(`Disciplina ${i + 1}:`, 10, y);
-        y += lineHeight;
-
-        doc.text("IES", 10, y);
-        doc.text("Disc. Cursada", 35, y);
-        doc.text("Cód.", 85, y);
-        doc.text("Nota", 100, y);
-        doc.text("C.H.", 115, y);
-        doc.text("Aproveitar como", 130, y);
-        doc.text("Cód.", 175, y);
-        doc.text("C.H.", 190, y);
-        y += lineHeight;
-
-        doc.setFont("helvetica", "normal");
-
-        const ies = d.querySelector(".ies-select").value;
-        const iesOutro = d.querySelector(".ies-outra").value;
-        const origem = ies === "Externa" ? iesOutro || "-" : "UFMT";
-
-        const cursada = d.querySelector(".disciplina-cursada").value || "-";
-        const codCursada = d.querySelector(".codigo-cursada").value || "-";
-        const nota = d.querySelector(".nota").value || "-";
-        const cargaCursada = d.querySelector(".carga-horaria-cursada").value || "-";
-
-        const selectAproveitar = d.querySelector("select.disciplina-aproveitar");
-        const codAproveitar = d.querySelector(".codigo-aproveitar").value || "-";
-        const aproveitadaNome = selectAproveitar.options[selectAproveitar.selectedIndex]?.text?.split(" - ")[1] || "-";
-        const dadosAproveitada = disciplinasDisponiveis.find(dd => dd.codigo === codAproveitar);
-        const cargaAproveitada = dadosAproveitada?.carga_horaria || "-";
-
-        const xIES = 10, wIES = 20;
-        const xCursada = 35, wCursada = 45;
-        const xCodCursada = 85, wCodCursada = 15;
-        const xNota = 100, wNota = 10;
-        const xCargaCursada = 115, wCargaCursada = 10;
-        const xAproveitar = 130, wAproveitar = 40;
-        const xCodAproveitar = 175, wCodAproveitar = 15;
-        const xCargaAproveitar = 190, wCargaAproveitar = 10;
-
-        const lines = {
-          ies: doc.splitTextToSize(origem, wIES),
-          cursada: doc.splitTextToSize(cursada, wCursada),
-          codCursada: doc.splitTextToSize(codCursada, wCodCursada),
-          nota: doc.splitTextToSize(nota, wNota),
-          cargaCursada: doc.splitTextToSize(cargaCursada, wCargaCursada),
-          aproveitada: doc.splitTextToSize(aproveitadaNome, wAproveitar),
-          codAproveitar: doc.splitTextToSize(codAproveitar, wCodAproveitar),
-          cargaAproveitar: doc.splitTextToSize(cargaAproveitada, wCargaAproveitar),
-        };
-
-        const maxLines = Math.max(...Object.values(lines).map(l => l.length));
-
-        for (let i = 0; i < maxLines; i++) {
-          doc.text(lines.ies[i] || "", xIES, y);
-          doc.text(lines.cursada[i] || "", xCursada, y);
-          doc.text(lines.codCursada[i] || "", xCodCursada, y);
-          doc.text(lines.nota[i] || "", xNota, y);
-          doc.text(lines.cargaCursada[i] || "", xCargaCursada, y);
-          doc.text(lines.aproveitada[i] || "", xAproveitar, y);
-          doc.text(lines.codAproveitar[i] || "", xCodAproveitar, y);
-          doc.text(lines.cargaAproveitar[i] || "", xCargaAproveitar, y);
-          y += lineHeight;
-        }
-
-        y += 3;
-      });
-
-      doc.save("aproveitamento_estudos.pdf");
-    }
-  </script>
-
-  <script>
-    let disciplinasDisponiveis = [];
-
-    async function carregarDisciplinas() {
-      try {
-        const response = await fetch('disciplinas.json');
-        disciplinasDisponiveis = await response.json();
-
-        document.querySelectorAll('.disciplina-aproveitar').forEach(select => {
-          popularSelectDisciplina(select);
-        });
-      } catch (err) {
-        console.error("Erro ao carregar disciplinas:", err);
-      }
-    }
-
-    function popularSelectDisciplina(select) {
-      select.innerHTML = '<option value="">Selecione</option>';
-      disciplinasDisponiveis.forEach(d => {
+      selectDisciplina.innerHTML = '<option value="">Selecione</option>';
+      disciplinas.forEach(d => {
         const option = document.createElement('option');
         option.value = d.codigo;
         option.textContent = `${d.codigo} - ${d.nome}`;
-        select.appendChild(option);
+        selectDisciplina.appendChild(option);
       });
+    } catch (err) {
+      console.error('Erro ao carregar disciplinas:', err);
+      selectDisciplina.innerHTML = '<option>Erro ao carregar</option>';
     }
+  }
 
-    function addDisciplina() {
-      const container = document.getElementById("disciplinas");
-      const nova = container.firstElementChild.cloneNode(true);
-      nova.querySelectorAll("input").forEach(input => input.value = "");
-      nova.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
-      nova.querySelector(".ies-externa").style.display = "none";
+  async function gerarPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-      const selectDisciplina = nova.querySelector(".disciplina-aproveitar");
-      popularSelectDisciplina(selectDisciplina);
+    const disciplinas = document.querySelectorAll(".disciplina");
+    let y = 15;
+    const lineHeight = 5;
+    const pageHeight = 280;
 
-      container.appendChild(nova);
+    doc.setFontSize(7);
+
+    disciplinas.forEach((d, i) => {
+      if (y + 35 > pageHeight) {
+        doc.addPage();
+        y = 15;
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.text(`Disciplina ${i + 1}:`, 10, y);
+      y += lineHeight;
+
+      doc.text("IES", 10, y);
+      doc.text("Disc. Cursada", 35, y);
+      doc.text("Cód.", 85, y);
+      doc.text("Nota", 100, y);
+      doc.text("C.H.", 115, y);
+      doc.text("Tipo", 130, y);
+      doc.text("Aproveitar como", 150, y);
+      doc.text("Cód.", 190, y);
+      doc.text("C.H.", 205, y);
+      y += lineHeight;
+
+      doc.setFont("helvetica", "normal");
+
+      const ies = d.querySelector(".ies-select").value;
+      const iesOutro = d.querySelector(".ies-outra").value;
+      const origem = ies === "Externa" ? iesOutro || "-" : "UFMT";
+
+      const cursada = d.querySelector(".disciplina-cursada").value || "-";
+      const codCursada = d.querySelector(".codigo-cursada").value || "-";
+      const nota = d.querySelector(".nota").value || "-";
+      const cargaCursada = d.querySelector(".carga-horaria-cursada").value || "-";
+
+      const tipo = d.querySelector(".tipo-disciplina").value || "-";
+
+      const selectAproveitar = d.querySelector("select.disciplina-aproveitar");
+      const codAproveitar = d.querySelector(".codigo-aproveitar").value || "-";
+      const aproveitadaNome = selectAproveitar.options[selectAproveitar.selectedIndex]?.text?.split(" - ")[1] || "-";
+
+      // Carrega a carga horária do JSON correto
+      let cargaAproveitada = "-";
+      try {
+        if (tipo === 'obrigatoria') {
+          const response = disciplinasObrigatorias || [];
+          cargaAproveitada = disciplinasObrigatorias.find(dd => dd.codigo === codAproveitar)?.carga_horaria || "-";
+        } else if (tipo === 'optativa') {
+          cargaAproveitada = disciplinasOptativas.find(dd => dd.codigo === codAproveitar)?.carga_horaria || "-";
+        }
+      } catch {
+        cargaAproveitada = "-";
+      }
+
+      const xIES = 10, wIES = 20;
+      const xCursada = 35, wCursada = 45;
+      const xCodCursada = 85, wCodCursada = 15;
+      const xNota = 100, wNota = 10;
+      const xCargaCursada = 115, wCargaCursada = 10;
+      const xTipo = 130, wTipo = 20;
+      const xAproveitar = 150, wAproveitar = 40;
+      const xCodAproveitar = 190, wCodAproveitar = 15;
+      const xCargaAproveitar = 205, wCargaAproveitar = 10;
+
+      const lines = {
+        ies: doc.splitTextToSize(origem, wIES),
+        cursada: doc.splitTextToSize(cursada, wCursada),
+        codCursada: doc.splitTextToSize(codCursada, wCodCursada),
+        nota: doc.splitTextToSize(nota, wNota),
+        cargaCursada: doc.splitTextToSize(cargaCursada, wCargaCursada),
+        tipo: doc.splitTextToSize(tipo.charAt(0).toUpperCase() + tipo.slice(1), wTipo),
+        aproveitada: doc.splitTextToSize(aproveitadaNome, wAproveitar),
+        codAproveitar: doc.splitTextToSize(codAproveitar, wCodAproveitar),
+        cargaAproveitar: doc.splitTextToSize(cargaAproveitada, wCargaAproveitar),
+      };
+
+      const maxLines = Math.max(...Object.values(lines).map(l => l.length));
+
+      for (let i = 0; i < maxLines; i++) {
+        doc.text(lines.ies[i] || "", xIES, y);
+        doc.text(lines.cursada[i] || "", xCursada, y);
+        doc.text(lines.codCursada[i] || "", xCodCursada, y);
+        doc.text(lines.nota[i] || "", xNota, y);
+        doc.text(lines.cargaCursada[i] || "", xCargaCursada, y);
+        doc.text(lines.tipo[i] || "", xTipo, y);
+        doc.text(lines.aproveitada[i] || "", xAproveitar, y);
+        doc.text(lines.codAproveitar[i] || "", xCodAproveitar, y);
+        doc.text(lines.cargaAproveitar[i] || "", xCargaAproveitar, y);
+        y += lineHeight;
+      }
+
+      y += 3;
+    });
+
+    doc.save("aproveitamento_estudos.pdf");
+  }
+
+  // Variáveis globais para guardar os JSONs
+  let disciplinasObrigatorias = [];
+  let disciplinasOptativas = [];
+
+  async function carregarJSONs() {
+    try {
+      const respObrig = await fetch('disciplinas_obrigatorias.json');
+      disciplinasObrigatorias = await respObrig.json();
+
+      const respOpt = await fetch('disciplinas_optativas.json');
+      disciplinasOptativas = await respOpt.json();
+
+      // Ao carregar, inicializar selects da primeira disciplina
+      document.querySelectorAll('.tipo-disciplina').forEach(sel => {
+        sel.selectedIndex = 0;
+      });
+      document.querySelectorAll('.disciplina-aproveitar').forEach(sel => {
+        sel.innerHTML = '<option>Selecione o tipo primeiro</option>';
+      });
+    } catch (e) {
+      console.error('Erro ao carregar JSONs:', e);
     }
+  }
 
-    window.addEventListener('DOMContentLoaded', carregarDisciplinas);
-  </script>
+  // Atualiza o select de disciplinas quando clicar em "Adicionar"
+  function addDisciplina() {
+    const container = document.getElementById("disciplinas");
+    const nova = container.firstElementChild.cloneNode(true);
+    nova.querySelectorAll("input").forEach(input => input.value = "");
+    nova.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
+    nova.querySelector(".ies-externa").style.display = "none";
+
+    container.appendChild(nova);
+  }
+
+  window.addEventListener('DOMContentLoaded', carregarJSONs);
+
+</script>
 </body>
 </html>
