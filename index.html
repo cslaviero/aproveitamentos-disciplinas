@@ -4,7 +4,25 @@
   <meta charset="UTF-8" />
   <title>Aproveitamento de Estudos</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <link rel="stylesheet" href="style.css" /> <!-- Opcional -->
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    .disciplina {
+      background: #fff; padding: 15px; margin-bottom: 20px;
+      border: 1px solid #ccc; border-radius: 8px;
+    }
+    label { display: block; margin-top: 10px; }
+    input, select {
+      width: 100%; padding: 6px; margin-top: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 8px 14px; font-size: 14px; margin-top: 10px;
+      cursor: pointer;
+    }
+    .ies-externa {
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <h2>Solicitação de Aproveitamento de Estudos</h2>
@@ -17,7 +35,7 @@
           <option value="Externa">Externa</option>
         </select>
       </label>
-      <label class="ies-externa" style="display:none;">
+      <label class="ies-externa">
         Qual instituição?
         <input type="text" class="ies-outra" placeholder="Nome da instituição" />
       </label>
@@ -33,7 +51,11 @@
       </label>
       <label>Disciplina a aproveitar:
         <select class="disciplina-aproveitar" onchange="atualizarDisciplina(this)">
-          <option value="">Carregando...</option>
+          <option value="">Selecione</option>
+          <option value="MAT101">MAT101 - Cálculo I</option>
+          <option value="FIS102">FIS102 - Física Geral</option>
+          <option value="ELE201">ELE201 - Circuitos Elétricos</option>
+          <option value="PROJ301">PROJ301 - Projeto Integrador</option>
         </select>
       </label>
       <label>Código da a aproveitar:
@@ -45,6 +67,129 @@
   <button onclick="addDisciplina()">Adicionar outra disciplina</button>
   <button onclick="gerarPDF()">Gerar PDF</button>
 
-  <script src="script.js"></script>
+  <script>
+    function mostrarCampoIES(select) {
+      const externaDiv = select.parentElement.parentElement.querySelector(".ies-externa");
+      if (select.value === "Externa") {
+        externaDiv.style.display = "block";
+      } else {
+        externaDiv.style.display = "none";
+        externaDiv.querySelector("input").value = "";
+      }
+    }
+
+    function atualizarDisciplina(select) {
+      const inputCodigo = select.parentElement.parentElement.querySelector(".codigo-aproveitar");
+      inputCodigo.value = select.value;
+    }
+
+    function addDisciplina() {
+      const container = document.getElementById("disciplinas");
+      const nova = container.firstElementChild.cloneNode(true);
+      nova.querySelectorAll("input").forEach(input => input.value = "");
+      nova.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
+      nova.querySelector(".ies-externa").style.display = "none";
+      container.appendChild(nova);
+    }
+
+  async function gerarPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const disciplinas = document.querySelectorAll(".disciplina");
+  let y = 15;
+  const lineHeight = 7;
+  const pageHeight = 280;
+
+  doc.setFontSize(9);
+
+  disciplinas.forEach((d, i) => {
+    if (y + 30 > pageHeight) {
+      doc.addPage();
+      y = 15;
+    }
+
+    // Cabeçalho em negrito para título e colunas
+    doc.setFont("helvetica", "bold");
+
+    doc.text(`Disciplina ${i + 1}:`, 10, y);
+    y += lineHeight;
+
+    doc.text("IES", 10, y);
+    doc.text("Disciplina Cursada", 35, y);
+    doc.text("Código", 85, y);
+    doc.text("Nota", 110, y);
+    doc.text("Aproveitar como", 130, y);
+    doc.text("Código", 175, y);
+    y += lineHeight;
+
+    // Dados em fonte normal
+    doc.setFont("helvetica", "normal");
+
+    const ies = d.querySelector(".ies-select").value;
+    const iesOutro = d.querySelector(".ies-outra").value;
+    const origem = ies === "Externa" ? iesOutro || "-" : "UFMT";
+
+    const cursada = d.querySelector(".disciplina-cursada").value || "-";
+    const codCursada = d.querySelector(".codigo-cursada").value || "-";
+    const nota = d.querySelector(".nota").value || "-";
+
+    const selectAproveitar = d.querySelector("select.disciplina-aproveitar");
+    const aproveitada = selectAproveitar.options[selectAproveitar.selectedIndex].text.split(" - ")[1] || "-";
+    const codAproveitar = d.querySelector(".codigo-aproveitar").value || "-";
+
+    // Definindo posições e larguras aproximadas das colunas
+    const xIES = 10;
+    const wIES = 20;
+
+    const xCursada = 35;
+    const wCursada = 45;
+
+    const xCodCursada = 85;
+    const wCodCursada = 20;
+
+    const xNota = 110;
+    const wNota = 15;
+
+    const xAproveitar = 130;
+    const wAproveitar = 40;
+
+    const xCodAproveitar = 175;
+    const wCodAproveitar = 25;
+
+    // Quebrar textos longos em linhas que cabem na largura da coluna
+    const iesLines = doc.splitTextToSize(origem, wIES);
+    const cursadaLines = doc.splitTextToSize(cursada, wCursada);
+    const codCursadaLines = doc.splitTextToSize(codCursada, wCodCursada);
+    const notaLines = doc.splitTextToSize(nota, wNota);
+    const aproveitarLines = doc.splitTextToSize(aproveitada, wAproveitar);
+    const codAproveitarLines = doc.splitTextToSize(codAproveitar, wCodAproveitar);
+
+    // Descobre o maior número de linhas para ajustar o "y"
+    const maxLines = Math.max(
+      iesLines.length,
+      cursadaLines.length,
+      codCursadaLines.length,
+      notaLines.length,
+      aproveitarLines.length,
+      codAproveitarLines.length
+    );
+
+    // Imprime cada coluna em sua posição, iniciando na mesma coordenada y
+    doc.text(iesLines, xIES, y);
+    doc.text(cursadaLines, xCursada, y);
+    doc.text(codCursadaLines, xCodCursada, y);
+    doc.text(notaLines, xNota, y);
+    doc.text(aproveitarLines, xAproveitar, y);
+    doc.text(codAproveitarLines, xCodAproveitar, y);
+
+    // Ajusta y para a próxima linha considerando múltiplas linhas possíveis
+    y += lineHeight * maxLines * 1.5;
+  });
+
+  doc.save("aproveitamento_estudos.pdf");
+}
+
+  </script>
 </body>
 </html>
