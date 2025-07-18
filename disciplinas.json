@@ -1,14 +1,50 @@
 [
-  { "codigo": "114100014", "nome": "Química Geral" },
-  { "codigo": "114100015", "nome": "Química Geral Experimental" },
-  { "codigo": "114300071", "nome": "Algoritmos e Estruturas de Dados I" },
-  { "codigo": "114300024", "nome": "Algoritmos e Estruturas de Dados II" },
-  { "codigo": "114200314", "nome": "Algoritmos e Estruturas de Dados III" },
-  { "codigo": "114300004", "nome": "Cálculo I " },
-  { "codigo": "114300005", "nome": "Cálculo II" },
-  { "codigo": "114100007", "nome": "Cálculo III" },
-  { "codigo": "114300009", "nome": "Física I" },
-  { "codigo": "114300062", "nome": "Física III" },
-  { "codigo": "114300010", "nome": "Física Experimental I" },
-  { "codigo": "114300013", "nome": "Física Experimental III" }
+    {
+        "codigo": "114100014",
+        "nome": "Química Geral"
+    },
+    {
+        "codigo": "114100015",
+        "nome": "Química Geral Experimental"
+    },
+    {
+        "codigo": "114300071",
+        "nome": "Algoritmos e Estruturas de Dados I"
+    },
+    {
+        "codigo": "114300024",
+        "nome": "Algoritmos e Estruturas de Dados II"
+    },
+    {
+        "codigo": "114200314",
+        "nome": "Algoritmos e Estruturas de Dados III"
+    },
+    {
+        "codigo": "114300004",
+        "nome": "Cálculo I "
+    },
+    {
+        "codigo": "114300005",
+        "nome": "Cálculo II"
+    },
+    {
+        "codigo": "114100007",
+        "nome": "Cálculo III"
+    },
+    {
+        "codigo": "114300009",
+        "nome": "Física I"
+    },
+    {
+        "codigo": "114300062",
+        "nome": "Física III"
+    },
+    {
+        "codigo": "114300010",
+        "nome": "Física Experimental I"
+    },
+    {
+        "codigo": "114300013",
+        "nome": "Física Experimental III"
+    }
 ]
