@@ -36,13 +36,79 @@
   },
   {
     "codigo": "114200350",
-    "nome": " Banco de Dados II",
+    "nome": "Banco de Dados II",
     "carga_horaria": "64h"
   },
-
-  
-
-  
+  {
+    "codigo": "114200351",
+    "nome": "Cálculo Numérico",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200352",
+    "nome": "Ciência de Dados",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200353",
+    "nome":  Compiladores",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200354",
+    "nome": "Criptografia e Segurança de Dados",
+    "carga_horaria": "64h"
+  },    
+  {
+    "codigo": "114200355",
+    "nome": "Desenvolvimento Para Dispositivos Móveis",
+    "carga_horaria": "64h"
+  },   
+  {
+    "codigo": "114200356",
+    "nome": "Desenvolvimento Para Web I",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200357",
+    "nome": "Desenvolvimento Para Web II",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200358",
+    "nome": "Direitos Humanos e Cidadania",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200359",
+    "nome": "Distributed Computing Principles ",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200360",
+    "nome": "Física II",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114300060",
+    "nome": "Fundamentos de Matemática Elementar",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200362",
+    "nome": "Gestão de Projetos",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200363",
+    "nome": "Instrumentação Industrial II ",
+    "carga_horaria": "64h"
+  },  
+  {
+    "codigo": "114200364",
+    "nome": "Inteligência de Negócios",
+    "carga_horaria": "64h"
+  },  
   {
     "codigo": "114200365",
     "nome": "Interação Humano-Computador",
@@ -54,10 +120,31 @@
     "carga_horaria": "64h"
   },
   {
+    "codigo": "114200367",
+    "nome": "Meta-Heurístícas",
+    "carga_horaria": "64h"
+  },  
+  {
     "codigo": "114200368",
     "nome": "Mineração de Dados",
     "carga_horaria": "64h"
   },
+  {
+    "codigo": "114200369",
+    "nome": "Modelagem e Controle de Sistemas Automatizado",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200370",
+    "nome": "Networking And The Internet",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200371",
+    "nome": "Pesquisa Operacional ",
+    "carga_horaria": "64h"
+  },
+  
   {
     "codigo": "114200376",
     "nome": " Robótica",
