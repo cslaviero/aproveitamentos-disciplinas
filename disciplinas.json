@@ -1,0 +1,6 @@
+[
+  { "codigo": "MAT101", "nome": "Cálculo I" },
+  { "codigo": "FIS102", "nome": "Física Geral" },
+  { "codigo": "ELE201", "nome": "Circuitos Elétricos" },
+  { "codigo": "PROJ301", "nome": "Projeto Integrador" }
+]
