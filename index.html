@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -30,7 +29,7 @@
         <input type="text" class="codigo-cursada" placeholder="Ex: MAT123" />
       </label>
       <label>Carga Horária cursada:
-      <input type="text" class="carga-horaria-cursada" placeholder="Ex: 60h" />
+        <input type="text" class="carga-horaria-cursada" placeholder="Ex: 60h" />
       </label>
       <label>Nota:
         <input type="text" class="nota" placeholder="Ex: 8.5" />
@@ -74,139 +73,135 @@
       container.appendChild(nova);
     }
 
-  async function gerarPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+    async function gerarPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
 
-  const disciplinas = document.querySelectorAll(".disciplina");
-  let y = 15;
-  const lineHeight = 5;
-  const pageHeight = 280;
+      const disciplinas = document.querySelectorAll(".disciplina");
+      let y = 15;
+      const lineHeight = 5;
+      const pageHeight = 280;
 
-  doc.setFontSize(9);
+      doc.setFontSize(9);
 
-  disciplinas.forEach((d, i) => {
-    if (y + 35 > pageHeight) {
-      doc.addPage();
-      y = 15;
+      disciplinas.forEach((d, i) => {
+        if (y + 35 > pageHeight) {
+          doc.addPage();
+          y = 15;
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.text(`Disciplina ${i + 1}:`, 10, y);
+        y += lineHeight;
+
+        doc.text("IES", 10, y);
+        doc.text("Disc. Cursada", 35, y);
+        doc.text("Cód.", 85, y);
+        doc.text("Nota", 100, y);
+        doc.text("C.H.", 115, y);
+        doc.text("Aproveitar como", 130, y);
+        doc.text("Cód.", 175, y);
+        doc.text("C.H.", 190, y);
+        y += lineHeight;
+
+        doc.setFont("helvetica", "normal");
+
+        const ies = d.querySelector(".ies-select").value;
+        const iesOutro = d.querySelector(".ies-outra").value;
+        const origem = ies === "Externa" ? iesOutro || "-" : "UFMT";
+
+        const cursada = d.querySelector(".disciplina-cursada").value || "-";
+        const codCursada = d.querySelector(".codigo-cursada").value || "-";
+        const nota = d.querySelector(".nota").value || "-";
+        const cargaCursada = d.querySelector(".carga-horaria-cursada").value || "-";
+
+        const selectAproveitar = d.querySelector("select.disciplina-aproveitar");
+        const codAproveitar = d.querySelector(".codigo-aproveitar").value || "-";
+        const aproveitadaNome = selectAproveitar.options[selectAproveitar.selectedIndex]?.text?.split(" - ")[1] || "-";
+        const dadosAproveitada = disciplinasDisponiveis.find(dd => dd.codigo === codAproveitar);
+        const cargaAproveitada = dadosAproveitada?.carga_horaria || "-";
+
+        const xIES = 10, wIES = 20;
+        const xCursada = 35, wCursada = 45;
+        const xCodCursada = 85, wCodCursada = 15;
+        const xNota = 100, wNota = 10;
+        const xCargaCursada = 115, wCargaCursada = 10;
+        const xAproveitar = 130, wAproveitar = 40;
+        const xCodAproveitar = 175, wCodAproveitar = 15;
+        const xCargaAproveitar = 190, wCargaAproveitar = 10;
+
+        const lines = {
+          ies: doc.splitTextToSize(origem, wIES),
+          cursada: doc.splitTextToSize(cursada, wCursada),
+          codCursada: doc.splitTextToSize(codCursada, wCodCursada),
+          nota: doc.splitTextToSize(nota, wNota),
+          cargaCursada: doc.splitTextToSize(cargaCursada, wCargaCursada),
+          aproveitada: doc.splitTextToSize(aproveitadaNome, wAproveitar),
+          codAproveitar: doc.splitTextToSize(codAproveitar, wCodAproveitar),
+          cargaAproveitar: doc.splitTextToSize(cargaAproveitada, wCargaAproveitar),
+        };
+
+        const maxLines = Math.max(...Object.values(lines).map(l => l.length));
+
+        for (let i = 0; i < maxLines; i++) {
+          doc.text(lines.ies[i] || "", xIES, y);
+          doc.text(lines.cursada[i] || "", xCursada, y);
+          doc.text(lines.codCursada[i] || "", xCodCursada, y);
+          doc.text(lines.nota[i] || "", xNota, y);
+          doc.text(lines.cargaCursada[i] || "", xCargaCursada, y);
+          doc.text(lines.aproveitada[i] || "", xAproveitar, y);
+          doc.text(lines.codAproveitar[i] || "", xCodAproveitar, y);
+          doc.text(lines.cargaAproveitar[i] || "", xCargaAproveitar, y);
+          y += lineHeight;
+        }
+
+        y += 3;
+      });
+
+      doc.save("aproveitamento_estudos.pdf");
     }
-
-    doc.setFont("helvetica", "bold");
-    doc.text(`Disciplina ${i + 1}:`, 10, y);
-    y += lineHeight;
-
-    doc.text("IES", 10, y);
-    doc.text("Disc. Cursada", 35, y);
-    doc.text("Cód.", 85, y);
-    doc.text("Nota", 100, y);
-    doc.text("C.H.", 115, y);
-    doc.text("Aproveitar como", 130, y);
-    doc.text("Cód.", 175, y);
-    doc.text("C.H.", 190, y);
-    y += lineHeight;
-
-    doc.setFont("helvetica", "normal");
-
-    const ies = d.querySelector(".ies-select").value;
-    const iesOutro = d.querySelector(".ies-outra").value;
-    const origem = ies === "Externa" ? iesOutro || "-" : "UFMT";
-
-    const cursada = d.querySelector(".disciplina-cursada").value || "-";
-    const codCursada = d.querySelector(".codigo-cursada").value || "-";
-    const nota = d.querySelector(".nota").value || "-";
-    const cargaCursada = d.querySelector(".carga-horaria-cursada").value || "-";
-
-    const selectAproveitar = d.querySelector("select.disciplina-aproveitar");
-    const codAproveitar = d.querySelector(".codigo-aproveitar").value || "-";
-    const aproveitadaNome = selectAproveitar.options[selectAproveitar.selectedIndex]?.text?.split(" - ")[1] || "-";
-    const dadosAproveitada = disciplinasDisponiveis.find(dd => dd.codigo === codAproveitar);
-    const cargaAproveitada = dadosAproveitada?.carga_horaria || "-";
-
-    const xIES = 10, wIES = 20;
-    const xCursada = 35, wCursada = 45;
-    const xCodCursada = 85, wCodCursada = 15;
-    const xNota = 100, wNota = 10;
-    const xCargaCursada = 115, wCargaCursada = 10;
-    const xAproveitar = 130, wAproveitar = 40;
-    const xCodAproveitar = 175, wCodAproveitar = 15;
-    const xCargaAproveitar = 190, wCargaAproveitar = 10;
-
-    const lines = {
-      ies: doc.splitTextToSize(origem, wIES),
-      cursada: doc.splitTextToSize(cursada, wCursada),
-      codCursada: doc.splitTextToSize(codCursada, wCodCursada),
-      nota: doc.splitTextToSize(nota, wNota),
-      cargaCursada: doc.splitTextToSize(cargaCursada, wCargaCursada),
-      aproveitada: doc.splitTextToSize(aproveitadaNome, wAproveitar),
-      codAproveitar: doc.splitTextToSize(codAproveitar, wCodAproveitar),
-      cargaAproveitar: doc.splitTextToSize(cargaAproveitada, wCargaAproveitar),
-    };
-
-    const maxLines = Math.max(...Object.values(lines).map(l => l.length));
-
-    for (let i = 0; i < maxLines; i++) {
-      doc.text(lines.ies[i] || "", xIES, y);
-      doc.text(lines.cursada[i] || "", xCursada, y);
-      doc.text(lines.codCursada[i] || "", xCodCursada, y);
-      doc.text(lines.nota[i] || "", xNota, y);
-      doc.text(lines.cargaCursada[i] || "", xCargaCursada, y);
-      doc.text(lines.aproveitada[i] || "", xAproveitar, y);
-      doc.text(lines.codAproveitar[i] || "", xCodAproveitar, y);
-      doc.text(lines.cargaAproveitar[i] || "", xCargaAproveitar, y);
-      y += lineHeight;
-    }
-
-    y += 3;
-  });
-
-  doc.save("aproveitamento_estudos.pdf");
-}
-
   </script>
+
   <script>
     let disciplinasDisponiveis = [];
 
-async function carregarDisciplinas() {
-  try {
-    const response = await fetch('disciplinas.json');
-    disciplinasDisponiveis = await response.json();
+    async function carregarDisciplinas() {
+      try {
+        const response = await fetch('disciplinas.json');
+        disciplinasDisponiveis = await response.json();
 
-    // Atualiza todos os selects existentes
-    document.querySelectorAll('.disciplina-aproveitar').forEach(select => {
-      popularSelectDisciplina(select);
-    });
-  } catch (err) {
-    console.error("Erro ao carregar disciplinas:", err);
-  }
-}
+        document.querySelectorAll('.disciplina-aproveitar').forEach(select => {
+          popularSelectDisciplina(select);
+        });
+      } catch (err) {
+        console.error("Erro ao carregar disciplinas:", err);
+      }
+    }
 
-function popularSelectDisciplina(select) {
-  select.innerHTML = '<option value="">Selecione</option>';
-  disciplinasDisponiveis.forEach(d => {
-    const option = document.createElement('option');
-    option.value = d.codigo;
-    option.textContent = `${d.codigo} - ${d.nome}`;
-    select.appendChild(option);
-  });
-}
+    function popularSelectDisciplina(select) {
+      select.innerHTML = '<option value="">Selecione</option>';
+      disciplinasDisponiveis.forEach(d => {
+        const option = document.createElement('option');
+        option.value = d.codigo;
+        option.textContent = `${d.codigo} - ${d.nome}`;
+        select.appendChild(option);
+      });
+    }
 
-function addDisciplina() {
-  const container = document.getElementById("disciplinas");
-  const nova = container.firstElementChild.cloneNode(true);
-  nova.querySelectorAll("input").forEach(input => input.value = "");
-  nova.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
-  nova.querySelector(".ies-externa").style.display = "none";
+    function addDisciplina() {
+      const container = document.getElementById("disciplinas");
+      const nova = container.firstElementChild.cloneNode(true);
+      nova.querySelectorAll("input").forEach(input => input.value = "");
+      nova.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
+      nova.querySelector(".ies-externa").style.display = "none";
 
-  // Atualiza select da nova disciplina
-  const selectDisciplina = nova.querySelector(".disciplina-aproveitar");
-  popularSelectDisciplina(selectDisciplina);
+      const selectDisciplina = nova.querySelector(".disciplina-aproveitar");
+      popularSelectDisciplina(selectDisciplina);
 
-  container.appendChild(nova);
-}
+      container.appendChild(nova);
+    }
 
-// Carrega as disciplinas assim que a página é carregada
-window.addEventListener('DOMContentLoaded', carregarDisciplinas);
-
+    window.addEventListener('DOMContentLoaded', carregarDisciplinas);
   </script>
 </body>
 </html>
