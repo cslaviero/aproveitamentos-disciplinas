@@ -1,5 +1,15 @@
 [
     {
+        "codigo": "114300071",
+        "nome": "Algoritmos e Estruturas de Dados I",
+        "carga_horaria": "64h"
+    },
+    {
+        "codigo": "114300004",
+        "nome": "Cálculo I ",
+        "carga_horaria": "96h"
+    },
+    {
         "codigo": "114200305",
         "nome": "Ciência, Tecnologia e Sociedade",
         "carga_horaria": "64h"
@@ -10,10 +20,22 @@
         "carga_horaria": "64h"
     },
     {
+        "codigo": "114100014",
+        "nome": "Química Geral",
+        "carga_horaria": "32h"
+    },
+    {
+        "codigo": "114100015",
+        "nome": "Química Geral Experimental",
+        "carga_horaria": "32h"
+    },
+    {
         "codigo": "114200405",
         "nome": "Sistemas Digitais",
         "carga_horaria": "64h"
     },
+
+    
     {
         "codigo": "114300006",
         "nome": "Álgebra Linear",
@@ -169,21 +191,8 @@
         "nome": "Teoria da Computação",
         "carga_horaria": "64h"
     }, 
-    {
-        "codigo": "114100014",
-        "nome": "Química Geral",
-        "carga_horaria": "32h"
-    },
-    {
-        "codigo": "114100015",
-        "nome": "Química Geral Experimental",
-        "carga_horaria": "32h"
-    },
-    {
-        "codigo": "114300071",
-        "nome": "Algoritmos e Estruturas de Dados I",
-        "carga_horaria": "64h"
-    },
+
+
     {
         "codigo": "114300024",
         "nome": "Algoritmos e Estruturas de Dados II",
@@ -194,11 +203,7 @@
         "nome": "Algoritmos e Estruturas de Dados III",
         "carga_horaria": "64h"
     },
-    {
-        "codigo": "114300004",
-        "nome": "Cálculo I ",
-        "carga_horaria": "96h"
-    },
+
     {
         "codigo": "114300005",
         "nome": "Cálculo II",
