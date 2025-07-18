@@ -1,5 +1,90 @@
 [
     {
+        "codigo": "114200305",
+        "nome": "Ciência, Tecnologia e Sociedade"
+    },
+    {
+        "codigo": "114200306",
+        "nome": "Escrita Científica"
+    },
+    {
+        "codigo": "114200405",
+        "nome": "Sistemas Digitais"
+    },
+    {
+        "codigo": "114300006",
+        "nome": "Álgebra Linear"
+    },
+    {
+        "codigo": "114200311",
+        "nome": "Circuitos Elétricos"
+    },
+    {
+        "codigo": "114300007",
+        "nome": "Matemática Discreta"
+    },
+    {
+        "codigo": "114200313",
+        "nome": "Organização de Computadores"
+    },
+    {
+        "codigo": "114200316",
+        "nome": " Circuitos Eletrônicos"
+    },
+    {
+        "codigo": "114300008",
+        "nome": "Probabilidade e Estatística"
+    },
+    {
+        "codigo": "114200320",
+        "nome": " Ciência dos Materiais"
+    },
+    {
+        "codigo": "114300017",
+        "nome": " Microcontroladores"
+    },
+    {
+        "codigo": "114200324",
+        "nome": " Modelagem Gráfica "
+    },
+    {
+        "codigo": "114200325",
+        "nome": "Programação Orientada a Objetos"
+    },
+    {
+        "codigo": "114200326",
+        "nome": "Arquitetura de Computadores"
+    },
+    {
+        "codigo": "114300030",
+        "nome": "Inteligência Artificial"
+    },
+    {
+        "codigo": "114200328",
+        "nome": "Introdução à Engenharia de Software"
+    },
+
+    {
+        "codigo": "114200329",
+        "nome": "Matemática Financeira"
+    },
+    {
+        "codigo": "114300016",
+        "nome": "Sinais e Sistemas"
+    },
+    {
+        "codigo": "114200331",
+        "nome": "Sistemas Operacionais"
+    },
+    {
+        "codigo": "114200333",
+        "nome": "Atitude Empreendedora"
+    },
+
+
+    
+    
+    {
         "codigo": "114100014",
         "nome": "Química Geral"
     },
