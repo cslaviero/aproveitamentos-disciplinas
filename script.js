@@ -1,10 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
+  let disciplinas = []; // variável global para guardar os dados
+
   carregarDisciplinas();
 
   function carregarDisciplinas() {
     fetch("disciplinas.json")
       .then(res => res.json())
-      .then(disciplinas => {
+      .then(data => {
+        disciplinas = data;  // salvar os dados na variável global
         preencherSelects(disciplinas);
       })
       .catch(err => {
@@ -51,70 +54,69 @@ document.addEventListener("DOMContentLoaded", () => {
     container.appendChild(nova);
 
     // Atualizar os selects do novo bloco
-    carregarDisciplinas();
+    preencherSelects(disciplinas);
   };
 
-  function gerarPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+  window.gerarPDF = function() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-  doc.setFontSize(12);
-  doc.text("Tabela de Disciplinas", 10, 10);
+    doc.setFontSize(12);
+    doc.text("Tabela de Disciplinas", 10, 10);
 
-  const tableTop = 20;
-  const rowHeight = 8;
-  let y = tableTop;
+    const tableTop = 20;
+    const rowHeight = 8;
+    let y = tableTop;
 
-  // Cabeçalhos da tabela
-  doc.setFont(undefined, "bold");
-  doc.text("IES", 10, y);
-  doc.text("Disciplina Cursada", 45, y);
-  doc.text("Cód", 95, y);
-  doc.text("Nota", 115, y);
-  doc.text("Aproveitar como", 135, y);
-  doc.text("Cód", 175, y);
-  doc.setFont(undefined, "normal");
+    // Cabeçalhos da tabela
+    doc.setFont(undefined, "bold");
+    doc.text("IES", 10, y);
+    doc.text("Disciplina Cursada", 45, y);
+    doc.text("Cód", 95, y);
+    doc.text("Nota", 115, y);
+    doc.text("Aproveitar como", 135, y);
+    doc.text("Cód", 175, y);
+    doc.setFont(undefined, "normal");
 
-  y += 10;
+    y += 10;
 
-  const lineHeight = 8;
-  const linhaAltura = 4;
+    const lineHeight = 8;
+    const linhaAltura = 4;
 
-  disciplinas.forEach((disciplina) => {
-    const origem = disciplina.origem;
-    const cursada = disciplina.nomeCursada;
-    const codCursada = disciplina.codigoCursada;
-    const nota = disciplina.nota;
-    const aproveitada = disciplina.nomeAproveitar;
-    const codAproveitar = disciplina.codigoAproveitar;
+    disciplinas.forEach((disciplina) => {
+      const origem = disciplina.origem || "-";
+      const cursada = disciplina.nomeCursada || "-";
+      const codCursada = disciplina.codigoCursada || "-";
+      const nota = disciplina.nota || "-";
+      const aproveitada = disciplina.nomeAproveitar || "-";
+      const codAproveitar = disciplina.codigoAproveitar || "-";
 
-    const origemLines = doc.splitTextToSize(origem, 30);
-    const cursadaLines = doc.splitTextToSize(cursada, 45);
-    const aproveitadaLines = doc.splitTextToSize(aproveitada, 40);
+      const origemLines = doc.splitTextToSize(origem, 30);
+      const cursadaLines = doc.splitTextToSize(cursada, 45);
+      const aproveitadaLines = doc.splitTextToSize(aproveitada, 40);
 
-    const maxLines = Math.max(origemLines.length, cursadaLines.length, aproveitadaLines.length);
+      const maxLines = Math.max(origemLines.length, cursadaLines.length, aproveitadaLines.length);
 
-    for (let j = 0; j < maxLines; j++) {
-      if (y > 270) {
-        doc.addPage();
-        y = 20;
+      for (let j = 0; j < maxLines; j++) {
+        if (y > 270) {
+          doc.addPage();
+          y = 20;
+        }
+
+        doc.text(origemLines[j] || "", 10, y);
+        doc.text(cursadaLines[j] || "", 45, y);
+        doc.text(j === 0 ? codCursada : "", 95, y);
+        doc.text(j === 0 ? nota : "", 115, y);
+        doc.text(aproveitadaLines[j] || "", 135, y);
+        doc.text(j === 0 ? codAproveitar : "", 175, y);
+
+        y += linhaAltura;
       }
 
-      doc.text(origemLines[j] || "", 10, y);
-      doc.text(cursadaLines[j] || "", 45, y);
-      doc.text(j === 0 ? codCursada : "", 95, y);
-      doc.text(j === 0 ? nota : "", 115, y);
-      doc.text(aproveitadaLines[j] || "", 135, y);
-      doc.text(j === 0 ? codAproveitar : "", 175, y);
+      y += 4; // espaço extra entre linhas de diferentes disciplinas
+    });
 
-      y += linhaAltura;
-    }
-
-    y += 4; // espaço extra entre linhas de diferentes disciplinas
-  });
-
-  doc.save("tabela_disciplinas.pdf");
-}
-
+    doc.save("tabela_disciplinas.pdf");
+  };
 
 });
