@@ -4,25 +4,7 @@
   <meta charset="UTF-8" />
   <title>Aproveitamento de Estudos</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
-    .disciplina {
-      background: #fff; padding: 15px; margin-bottom: 20px;
-      border: 1px solid #ccc; border-radius: 8px;
-    }
-    label { display: block; margin-top: 10px; }
-    input, select {
-      width: 100%; padding: 6px; margin-top: 4px;
-      box-sizing: border-box;
-    }
-    button {
-      padding: 8px 14px; font-size: 14px; margin-top: 10px;
-      cursor: pointer;
-    }
-    .ies-externa {
-      display: none;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <h2>Solicitação de Aproveitamento de Estudos</h2>
@@ -51,11 +33,7 @@
       </label>
       <label>Disciplina a aproveitar:
         <select class="disciplina-aproveitar" onchange="atualizarDisciplina(this)">
-          <option value="">Selecione</option>
-          <option value="MAT101">MAT101 - Cálculo I</option>
-          <option value="FIS102">FIS102 - Física Geral</option>
-          <option value="ELE201">ELE201 - Circuitos Elétricos</option>
-          <option value="PROJ301">PROJ301 - Projeto Integrador</option>
+          <option value="">Carregando...</option>
         </select>
       </label>
       <label>Código da a aproveitar:
@@ -189,6 +167,51 @@
 
   doc.save("aproveitamento_estudos.pdf");
 }
+
+  </script>
+  <script>
+    let disciplinasDisponiveis = [];
+
+async function carregarDisciplinas() {
+  try {
+    const response = await fetch('disciplinas.json');
+    disciplinasDisponiveis = await response.json();
+
+    // Atualiza todos os selects existentes
+    document.querySelectorAll('.disciplina-aproveitar').forEach(select => {
+      popularSelectDisciplina(select);
+    });
+  } catch (err) {
+    console.error("Erro ao carregar disciplinas:", err);
+  }
+}
+
+function popularSelectDisciplina(select) {
+  select.innerHTML = '<option value="">Selecione</option>';
+  disciplinasDisponiveis.forEach(d => {
+    const option = document.createElement('option');
+    option.value = d.codigo;
+    option.textContent = `${d.codigo} - ${d.nome}`;
+    select.appendChild(option);
+  });
+}
+
+function addDisciplina() {
+  const container = document.getElementById("disciplinas");
+  const nova = container.firstElementChild.cloneNode(true);
+  nova.querySelectorAll("input").forEach(input => input.value = "");
+  nova.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
+  nova.querySelector(".ies-externa").style.display = "none";
+
+  // Atualiza select da nova disciplina
+  const selectDisciplina = nova.querySelector(".disciplina-aproveitar");
+  popularSelectDisciplina(selectDisciplina);
+
+  container.appendChild(nova);
+}
+
+// Carrega as disciplinas assim que a página é carregada
+window.addEventListener('DOMContentLoaded', carregarDisciplinas);
 
   </script>
 </body>
