@@ -11,8 +11,8 @@
     },
     {
         "codigo": "114200305",
-        "nome": "Ciência, Tecnologia e Sociedade",
-        "carga_horaria": "64h"
+        "nome": "Ciência, Tecnologia e Sociedade (EAD)",
+        "carga_horaria": "32h"
     },
     {
         "codigo": "114200306",
@@ -34,12 +34,20 @@
         "nome": "Sistemas Digitais",
         "carga_horaria": "64h"
     },
-
-    
     {
         "codigo": "114300006",
         "nome": "Álgebra Linear",
         "carga_horaria": "64h"
+    },
+    {
+        "codigo": "114300024",
+        "nome": "Algoritmos e Estruturas de Dados II",
+        "carga_horaria": "64h"
+    },
+    {
+        "codigo": "114300005",
+        "nome": "Cálculo II",
+        "carga_horaria": "96h"
     },
     {
         "codigo": "114200311",
@@ -57,9 +65,29 @@
         "carga_horaria": "64h"
     },
     {
+        "codigo": "114200314",
+        "nome": "Algoritmos e Estruturas de Dados III",
+        "carga_horaria": "64h"
+    },
+    {
+        "codigo": "114100007",
+        "nome": "Cálculo III",
+        "carga_horaria": "96h"
+    },
+    {
         "codigo": "114200316",
         "nome": " Circuitos Eletrônicos",
         "carga_horaria": "64h"
+    },
+    {
+        "codigo": "114300009",
+        "nome": "Física I",
+        "carga_horaria": "64h"
+    },
+    {
+        "codigo": "114300010",
+        "nome": "Física Experimental I",
+        "carga_horaria": "32h"
     },
     {
         "codigo": "114300008",
@@ -69,8 +97,18 @@
     {
         "codigo": "114200320",
         "nome": " Ciência dos Materiais",
+        "carga_horaria": "32h"
+    },
+    {
+        "codigo": "114300062",
+        "nome": "Física III",
         "carga_horaria": "64h"
     },
+    {
+        "codigo": "114300013",
+        "nome": "Física Experimental III",
+        "carga_horaria": "32h"
+    }
     {
         "codigo": "114300017",
         "nome": " Microcontroladores",
@@ -79,7 +117,7 @@
     {
         "codigo": "114200324",
         "nome": " Modelagem Gráfica ",
-        "carga_horaria": "64h"
+        "carga_horaria": "32h"
     },
     {
         "codigo": "114200325",
@@ -103,7 +141,7 @@
     },
     {
         "codigo": "114200329",
-        "nome": "Matemática Financeira",
+        "nome": "Matemática Financeira (EAD)",
         "carga_horaria": "64h"
     },
     {
@@ -118,7 +156,7 @@
     },
     {
         "codigo": "114200333",
-        "nome": "Atitude Empreendedora",
+        "nome": "Atitude Empreendedora (EAD)",
         "carga_horaria": "64h"
     },
     {
@@ -129,7 +167,7 @@
     {
         "codigo": "114200335",
         "nome": "Laboratório de Arquitetura de Computadores",
-        "carga_horaria": "64h"
+        "carga_horaria": "32h"
     },
     {
         "codigo": "114200336",
@@ -191,48 +229,19 @@
         "nome": "Teoria da Computação",
         "carga_horaria": "64h"
     }, 
-
-
     {
-        "codigo": "114300024",
-        "nome": "Algoritmos e Estruturas de Dados II",
+        "codigo": "",
+        "nome": "Optativa I",
         "carga_horaria": "64h"
-    },
+    }, 
     {
-        "codigo": "114200314",
-        "nome": "Algoritmos e Estruturas de Dados III",
+        "codigo": "",
+        "nome": "Optativa II",
         "carga_horaria": "64h"
-    },
-
+    }, 
     {
-        "codigo": "114300005",
-        "nome": "Cálculo II",
-        "carga_horaria": "96h"
-    },
-    {
-        "codigo": "114100007",
-        "nome": "Cálculo III",
-        "carga_horaria": "96h"
-    },
-    {
-        "codigo": "114300009",
-        "nome": "Física I",
+        "codigo": "",
+        "nome": "Optativa III (EAD)",
         "carga_horaria": "64h"
-    },
-    {
-        "codigo": "114300062",
-        "nome": "Física III",
-        "carga_horaria": "64h"
-    },
-    {
-        "codigo": "114300010",
-        "nome": "Física Experimental I",
-        "carga_horaria": "32h"
-    },
-    {
-        "codigo": "114300013",
-        "nome": "Física Experimental III",
-        "carga_horaria": "32h"
-    }
-    
+    }, 
 ]
