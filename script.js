@@ -58,65 +58,73 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   window.gerarPDF = function() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
 
-    doc.setFontSize(12);
-    doc.text("Tabela de Disciplinas", 10, 10);
+  doc.setFontSize(12);
+  doc.text("Tabela de Disciplinas", 10, 10);
 
-    const tableTop = 20;
-    const rowHeight = 8;
-    let y = tableTop;
+  const tableTop = 20;
+  let y = tableTop;
 
-    // Cabeçalhos da tabela
-    doc.setFont(undefined, "bold");
-    doc.text("IES", 10, y);
-    doc.text("Disciplina Cursada", 45, y);
-    doc.text("Cód", 95, y);
-    doc.text("Nota", 115, y);
-    doc.text("Aproveitar como", 135, y);
-    doc.text("Cód", 175, y);
-    doc.setFont(undefined, "normal");
+  // Cabeçalhos
+  doc.setFont(undefined, "bold");
+  doc.text("IES", 10, y);
+  doc.text("Disciplina Cursada", 40, y);
+  doc.text("Cód", 110, y);
+  doc.text("Nota", 130, y);
+  doc.text("Aproveitar como", 150, y);
+  doc.text("Cód", 190, y);
+  doc.setFont(undefined, "normal");
 
-    y += 10;
+  y += 10;
 
-    const lineHeight = 8;
-    const linhaAltura = 4;
+  const linhaAltura = 6;
 
-    disciplinas.forEach((disciplina) => {
-      const origem = disciplina.origem || "-";
-      const cursada = disciplina.nomeCursada || "-";
-      const codCursada = disciplina.codigoCursada || "-";
-      const nota = disciplina.nota || "-";
-      const aproveitada = disciplina.nomeAproveitar || "-";
-      const codAproveitar = disciplina.codigoAproveitar || "-";
+  disciplinas.forEach((disciplina) => {
+    const origem = disciplina.origem || "-";
+    const cursada = disciplina.nomeCursada || "-";
+    const codCursada = disciplina.codigoCursada || "-";
+    const nota = disciplina.nota || "-";
+    const aproveitada = disciplina.nomeAproveitar || "-";
+    const codAproveitar = disciplina.codigoAproveitar || "-";
 
-      const origemLines = doc.splitTextToSize(origem, 30);
-      const cursadaLines = doc.splitTextToSize(cursada, 45);
-      const aproveitadaLines = doc.splitTextToSize(aproveitada, 40);
+    const origemLines = doc.splitTextToSize(origem, 25);
+    const cursadaLines = doc.splitTextToSize(cursada, 60);
+    const aproveitadaLines = doc.splitTextToSize(aproveitada, 35);
 
-      const maxLines = Math.max(origemLines.length, cursadaLines.length, aproveitadaLines.length);
+    const maxLines = Math.max(origemLines.length, cursadaLines.length, aproveitadaLines.length);
 
-      for (let j = 0; j < maxLines; j++) {
-        if (y > 270) {
-          doc.addPage();
-          y = 20;
-        }
-
-        doc.text(origemLines[j] || "", 10, y);
-        doc.text(cursadaLines[j] || "", 45, y);
-        doc.text(j === 0 ? codCursada : "", 95, y);
-        doc.text(j === 0 ? nota : "", 115, y);
-        doc.text(aproveitadaLines[j] || "", 135, y);
-        doc.text(j === 0 ? codAproveitar : "", 175, y);
-
-        y += linhaAltura;
+    for (let i = 0; i < maxLines; i++) {
+      // Quebra de página automática
+      if (y > 270) {
+        doc.addPage();
+        y = 20;
       }
 
-      y += 4; // espaço extra entre linhas de diferentes disciplinas
-    });
+      doc.text(origemLines[i] || "", 10, y);
+      doc.text(cursadaLines[i] || "", 40, y);
 
-    doc.save("tabela_disciplinas.pdf");
-  };
+      // Só imprime código e nota na primeira linha para evitar repetição
+      if (i === 0) {
+        doc.text(codCursada, 110, y);
+        doc.text(nota, 130, y);
+      }
+
+      doc.text(aproveitadaLines[i] || "", 150, y);
+
+      if (i === 0) {
+        doc.text(codAproveitar, 190, y);
+      }
+
+      y += linhaAltura;
+    }
+
+    y += 4; // espaço extra entre disciplinas
+  });
+
+  doc.save("tabela_disciplinas.pdf");
+};
+
 
 });
