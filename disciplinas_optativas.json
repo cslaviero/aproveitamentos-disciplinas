@@ -1,0 +1,12 @@
+[
+  {
+    "codigo": "FIS201",
+    "nome": "Física Experimental",
+    "carga_horaria": "40h"
+  },
+  {
+    "codigo": "ART102",
+    "nome": "Introdução à Arte",
+    "carga_horaria": "30h"
+  }
+]
