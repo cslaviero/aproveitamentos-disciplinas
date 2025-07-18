@@ -1,4 +1,5 @@
 [
+  { "codigo": "MAT103", "nome": "Cálculo III" },
   { "codigo": "MAT102", "nome": "Cálculo II" },
   { "codigo": "MAT101", "nome": "Cálculo I" },
   { "codigo": "FIS102", "nome": "Física Geral" },
