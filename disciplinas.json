@@ -1,8 +1,9 @@
 [
+  { "codigo": "FIS103", "nome": "Física III" },
   { "codigo": "MAT103", "nome": "Cálculo III" },
   { "codigo": "MAT102", "nome": "Cálculo II" },
   { "codigo": "MAT101", "nome": "Cálculo I" },
-  { "codigo": "FIS102", "nome": "Física Geral" },
+  { "codigo": "FIS101", "nome": "Física I" },
   { "codigo": "ELE201", "nome": "Circuitos Elétricos" },
   { "codigo": "PROJ301", "nome": "Projeto Integrador" }
 ]
