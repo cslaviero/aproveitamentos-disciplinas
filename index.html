@@ -76,7 +76,7 @@
 
   const disciplinas = document.querySelectorAll(".disciplina");
   let y = 15;
-  const lineHeight = 7;
+  const lineHeight = 5;
   const pageHeight = 280;
 
   doc.setFontSize(9);
@@ -162,7 +162,7 @@
     doc.text(codAproveitarLines, xCodAproveitar, y);
 
     // Ajusta y para a próxima linha considerando múltiplas linhas possíveis
-    y += lineHeight * maxLines * 1.5;
+    y += lineHeight * maxLines * 1.0;
   });
 
   doc.save("aproveitamento_estudos.pdf");
