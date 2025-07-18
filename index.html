@@ -161,7 +161,7 @@
     const nota = d.querySelector(".nota").value || "-";
     const cargaCursada = d.querySelector(".carga-horaria-cursada").value || "-";
 
-    const tipo = d.querySelector(".tipo-disciplina").value || "-";
+    const tipo = d.querySelector(".tipo-disciplina")?.value || "-";
 
     const selectAproveitar = d.querySelector("select.disciplina-aproveitar");
     const codAproveitar = d.querySelector(".codigo-aproveitar").value || "-";
@@ -178,43 +178,52 @@
       cargaAproveitada = "-";
     }
 
-    const xIES = 10;
-    const xCursada = 35;
-    const xCodCursada = 85;
-    const xNota = 100;
-    const xCargaCursada = 115;
-    const xTipo = 130;
-    const xAproveitar = 150;
-    const xCodAproveitar = 190;
-    const xCargaAproveitar = 205;
+    // Definindo posições e larguras
+    const xIES = 10, wIES = 20;
+    const xCursada = 35, wCursada = 45;
+    const xCodCursada = 85, wCodCursada = 15;
+    const xNota = 100, wNota = 10;
+    const xCargaCursada = 115, wCargaCursada = 10;
+    const xTipo = 130, wTipo = 15;
+    const xAproveitar = 150, wAproveitar = 40;
+    const xCodAproveitar = 190, wCodAproveitar = 15;
+    const xCargaAproveitar = 205, wCargaAproveitar = 10;
 
-    // Quebra de linha APENAS na coluna 'Disciplina a aproveitar'
-    const aproveitadaLines = doc.splitTextToSize(aproveitadaNome, 40);
+    // Quebrar texto em linhas para todas as colunas
+    const lines = {
+      ies: doc.splitTextToSize(origem, wIES),
+      cursada: doc.splitTextToSize(cursada, wCursada),
+      codCursada: doc.splitTextToSize(codCursada, wCodCursada),
+      nota: doc.splitTextToSize(nota, wNota),
+      cargaCursada: doc.splitTextToSize(cargaCursada, wCargaCursada),
+      tipo: doc.splitTextToSize(tipo.charAt(0).toUpperCase() + tipo.slice(1), wTipo),
+      aproveitada: doc.splitTextToSize(aproveitadaNome, wAproveitar),
+      codAproveitar: doc.splitTextToSize(codAproveitar, wCodAproveitar),
+      cargaAproveitar: doc.splitTextToSize(cargaAproveitada, wCargaAproveitar),
+    };
 
-    // As outras colunas SEM quebra, só texto direto
-    for (let i = 0; i < aproveitadaLines.length; i++) {
+    // Número máximo de linhas entre todas as colunas
+    const maxLines = Math.max(...Object.values(lines).map(arr => arr.length));
+
+    for (let i = 0; i < maxLines; i++) {
       const yLine = y + i * lineHeight;
-      if (i === 0) {
-        doc.text(origem, xIES, yLine);
-        doc.text(cursada, xCursada, yLine);
-        doc.text(codCursada, xCodCursada, yLine);
-        doc.text(nota, xNota, yLine);
-        doc.text(cargaCursada, xCargaCursada, yLine);
-        doc.text(tipo.charAt(0).toUpperCase() + tipo.slice(1), xTipo, yLine);
-        doc.text(aproveitadaLines[i], xAproveitar, yLine);
-        doc.text(codAproveitar, xCodAproveitar, yLine);
-        doc.text(cargaAproveitada, xCargaAproveitar, yLine);
-      } else {
-        // Só imprime as linhas extras da disciplina aproveitada, colunas vazias para não sobrescrever
-        doc.text(aproveitadaLines[i], xAproveitar, yLine);
-      }
+      doc.text(lines.ies[i] || "", xIES, yLine);
+      doc.text(lines.cursada[i] || "", xCursada, yLine);
+      doc.text(lines.codCursada[i] || "", xCodCursada, yLine);
+      doc.text(lines.nota[i] || "", xNota, yLine);
+      doc.text(lines.cargaCursada[i] || "", xCargaCursada, yLine);
+      doc.text(lines.tipo[i] || "", xTipo, yLine);
+      doc.text(lines.aproveitada[i] || "", xAproveitar, yLine);
+      doc.text(lines.codAproveitar[i] || "", xCodAproveitar, yLine);
+      doc.text(lines.cargaAproveitar[i] || "", xCargaAproveitar, yLine);
     }
 
-    y += aproveitadaLines.length * lineHeight + 3;
+    y += maxLines * lineHeight + 3;
   });
 
   doc.save("aproveitamento_estudos.pdf");
 }
+
 
 
   // Variáveis globais para guardar os JSONs
