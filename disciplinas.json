@@ -80,9 +80,65 @@
         "codigo": "114200333",
         "nome": "Atitude Empreendedora"
     },
+    {
+        "codigo": "114200334",
+        "nome": "Banco de Dados I"
+    },
+    {
+        "codigo": "114200335",
+        "nome": "Laboratório de Arquitetura de Computadores"
+    },
+    {
+        "codigo": "114200336",
+        "nome": "Mecânica dos Sólidos"
+    },
+    {
+        "codigo": "114300019",
+        "nome": "Processamento de Sinais"
+    },
+    {
+        "codigo": "114200338",
+        "nome": "Projeto e Análise de Algoritmos"
+    },
 
+    {
+        "codigo": "114300021",
+        "nome": "Sistemas Embarcados"
+    },    
+    {
+        "codigo": "114200340",
+        "nome": "Fenômenos de Transportes"
+    },    
+    {
+        "codigo": "114300018",
+        "nome": "Instrumentação Industrial I"
+    },  
+    {
+        "codigo": "114200342",
+        "nome": "Projeto de Engenharia e Computação I"
+    },      
 
-    
+    {
+        "codigo": "114200343",
+        "nome": "Redes de Computadores"
+    },  
+    {
+        "codigo": "114300022",
+        "nome": "Automação Industrial"
+    },  
+    {
+        "codigo": "114200398",
+        "nome": "Introdução Aos Sistemas de Controle"
+    },  
+    {
+        "codigo": "114200399",
+        "nome": "Projeto de Engenharia e Computação II"
+    },  
+
+    {
+        "codigo": "114200344",
+        "nome": "Teoria da Computação"
+    }, 
     
     {
         "codigo": "114100014",
@@ -132,4 +188,18 @@
         "codigo": "114300013",
         "nome": "Física Experimental III"
     }
+    
+    {
+        "codigo": "",
+        "nome": "Optativa I"
+    }
+    {
+        "codigo": "",
+        "nome": "Optativa II"
+    }
+    {
+        "codigo": "",
+        "nome": "Optativa III (EAD)"
+    }    
+    
 ]
