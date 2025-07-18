@@ -20,16 +20,6 @@
     "carga_horaria": "64h"
   },
   {
-    "codigo": "114200402",
-    "nome": "Atividades Complementares",
-    "carga_horaria": "64h"
-  },
-  {
-    "codigo": "114200403",
-    "nome": "Atividades de Extensão",
-    "carga_horaria": "64h"
-  },
-  {
     "codigo": "114200349",
     "nome": " Automação Industrial II",
     "carga_horaria": "64h"
@@ -144,10 +134,39 @@
     "nome": "Pesquisa Operacional ",
     "carga_horaria": "64h"
   },
-  
+  {
+    "codigo": "114200372",
+    "nome": "Plataformas e Apis",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200373",
+    "nome": "Processamento Digital de Imagens",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200374",
+    "nome": "Projeto Digital Avançado ",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200375",
+    "nome": "Redes Neurais ",
+    "carga_horaria": "64h"
+  },
   {
     "codigo": "114200376",
     "nome": " Robótica",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200377",
+    "nome": " Sistemas de Controle II",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200378",
+    "nome": " Sistemas de Controle III",
     "carga_horaria": "64h"
   },
   {
@@ -216,7 +235,7 @@
     "carga_horaria": "64h"
   }, 
   {
-    "codigo": "114200390",114200396
+    "codigo": "114200390",
     "nome": "Tópicos em Sistemas de Telecomunicações",
     "carga_horaria": "64h"
   }, 
@@ -239,6 +258,5 @@
     "codigo": "114200396",
     "nome": "Visão Computacional ",
     "carga_horaria": "64h"
-  }, 
-  
+  } 
 ]
