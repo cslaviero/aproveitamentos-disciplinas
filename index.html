@@ -210,7 +210,7 @@
       doc.text(lines.ies[i] || "", xIES, yLine);
       doc.text(lines.cursada[i] || "", xCursada, yLine);
       doc.text(lines.codCursada[i] || "", xCodCursada, yLine);
-      doc.text(lines.nota[i] || "", xNota, yLine);
+      doc.text(lines.nota[i] || "", xNota + wNota, yLine, { align: "right" });
       doc.text(lines.cargaCursada[i] || "", xCargaCursada, yLine);
       doc.text(lines.tipo[i] || "", xTipo, yLine);
       doc.text(lines.aproveitada[i] || "", xAproveitar, yLine);
