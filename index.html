@@ -119,109 +119,103 @@
   }
 
   async function gerarPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
 
-    const disciplinas = document.querySelectorAll(".disciplina");
-    let y = 15;
-    const lineHeight = 5;
-    const pageHeight = 280;
+  const disciplinas = document.querySelectorAll(".disciplina");
+  let y = 15;
+  const lineHeight = 5;
+  const pageHeight = 280;
 
-    doc.setFontSize(7);
+  doc.setFontSize(7);
 
-    disciplinas.forEach((d, i) => {
-      if (y + 35 > pageHeight) {
-        doc.addPage();
-        y = 15;
+  disciplinas.forEach((d, i) => {
+    if (y + 35 > pageHeight) {
+      doc.addPage();
+      y = 15;
+    }
+
+    doc.setFont("helvetica", "bold");
+    doc.text(`Disciplina ${i + 1}:`, 10, y);
+    y += lineHeight;
+
+    doc.text("IES", 10, y);
+    doc.text("Disc. Cursada", 35, y);
+    doc.text("Cód.", 85, y);
+    doc.text("Nota", 100, y);
+    doc.text("C.H.", 115, y);
+    doc.text("Tipo", 130, y);
+    doc.text("Aproveitar como", 150, y);
+    doc.text("Cód.", 190, y);
+    doc.text("C.H.", 205, y);
+    y += lineHeight;
+
+    doc.setFont("helvetica", "normal");
+
+    const ies = d.querySelector(".ies-select").value;
+    const iesOutro = d.querySelector(".ies-outra").value;
+    const origem = ies === "Externa" ? iesOutro || "-" : "UFMT";
+
+    const cursada = d.querySelector(".disciplina-cursada").value || "-";
+    const codCursada = d.querySelector(".codigo-cursada").value || "-";
+    const nota = d.querySelector(".nota").value || "-";
+    const cargaCursada = d.querySelector(".carga-horaria-cursada").value || "-";
+
+    const tipo = d.querySelector(".tipo-disciplina").value || "-";
+
+    const selectAproveitar = d.querySelector("select.disciplina-aproveitar");
+    const codAproveitar = d.querySelector(".codigo-aproveitar").value || "-";
+    const aproveitadaNome = selectAproveitar.options[selectAproveitar.selectedIndex]?.text?.split(" - ")[1] || "-";
+
+    let cargaAproveitada = "-";
+    try {
+      if (tipo === 'obrigatoria') {
+        cargaAproveitada = disciplinasObrigatorias.find(dd => dd.codigo === codAproveitar)?.carga_horaria || "-";
+      } else if (tipo === 'optativa') {
+        cargaAproveitada = disciplinasOptativas.find(dd => dd.codigo === codAproveitar)?.carga_horaria || "-";
       }
+    } catch {
+      cargaAproveitada = "-";
+    }
 
-      doc.setFont("helvetica", "bold");
-      doc.text(`Disciplina ${i + 1}:`, 10, y);
-      y += lineHeight;
+    const xIES = 10;
+    const xCursada = 35;
+    const xCodCursada = 85;
+    const xNota = 100;
+    const xCargaCursada = 115;
+    const xTipo = 130;
+    const xAproveitar = 150;
+    const xCodAproveitar = 190;
+    const xCargaAproveitar = 205;
 
-      doc.text("IES", 10, y);
-      doc.text("Disc. Cursada", 35, y);
-      doc.text("Cód.", 85, y);
-      doc.text("Nota", 100, y);
-      doc.text("C.H.", 115, y);
-      doc.text("Tipo", 130, y);
-      doc.text("Aproveitar como", 150, y);
-      doc.text("Cód.", 190, y);
-      doc.text("C.H.", 205, y);
-      y += lineHeight;
+    // Quebra de linha APENAS na coluna 'Disciplina a aproveitar'
+    const aproveitadaLines = doc.splitTextToSize(aproveitadaNome, 40);
 
-      doc.setFont("helvetica", "normal");
-
-      const ies = d.querySelector(".ies-select").value;
-      const iesOutro = d.querySelector(".ies-outra").value;
-      const origem = ies === "Externa" ? iesOutro || "-" : "UFMT";
-
-      const cursada = d.querySelector(".disciplina-cursada").value || "-";
-      const codCursada = d.querySelector(".codigo-cursada").value || "-";
-      const nota = d.querySelector(".nota").value || "-";
-      const cargaCursada = d.querySelector(".carga-horaria-cursada").value || "-";
-
-      const tipo = d.querySelector(".tipo-disciplina").value || "-";
-
-      const selectAproveitar = d.querySelector("select.disciplina-aproveitar");
-      const codAproveitar = d.querySelector(".codigo-aproveitar").value || "-";
-      const aproveitadaNome = selectAproveitar.options[selectAproveitar.selectedIndex]?.text?.split(" - ")[1] || "-";
-
-      // Carrega a carga horária do JSON correto
-      let cargaAproveitada = "-";
-      try {
-        if (tipo === 'obrigatoria') {
-          const response = disciplinasObrigatorias || [];
-          cargaAproveitada = disciplinasObrigatorias.find(dd => dd.codigo === codAproveitar)?.carga_horaria || "-";
-        } else if (tipo === 'optativa') {
-          cargaAproveitada = disciplinasOptativas.find(dd => dd.codigo === codAproveitar)?.carga_horaria || "-";
-        }
-      } catch {
-        cargaAproveitada = "-";
+    // As outras colunas SEM quebra, só texto direto
+    for (let i = 0; i < aproveitadaLines.length; i++) {
+      const yLine = y + i * lineHeight;
+      if (i === 0) {
+        doc.text(origem, xIES, yLine);
+        doc.text(cursada, xCursada, yLine);
+        doc.text(codCursada, xCodCursada, yLine);
+        doc.text(nota, xNota, yLine);
+        doc.text(cargaCursada, xCargaCursada, yLine);
+        doc.text(tipo.charAt(0).toUpperCase() + tipo.slice(1), xTipo, yLine);
+        doc.text(aproveitadaLines[i], xAproveitar, yLine);
+        doc.text(codAproveitar, xCodAproveitar, yLine);
+        doc.text(cargaAproveitada, xCargaAproveitar, yLine);
+      } else {
+        // Só imprime as linhas extras da disciplina aproveitada, colunas vazias para não sobrescrever
+        doc.text(aproveitadaLines[i], xAproveitar, yLine);
       }
+    }
 
-      const xIES = 10, wIES = 20;
-      const xCursada = 35, wCursada = 45;
-      const xCodCursada = 85, wCodCursada = 15;
-      const xNota = 100, wNota = 10;
-      const xCargaCursada = 115, wCargaCursada = 10;
-      const xTipo = 130, wTipo = 20;
-      const xAproveitar = 150, wAproveitar = 40;
-      const xCodAproveitar = 190, wCodAproveitar = 15;
-      const xCargaAproveitar = 205, wCargaAproveitar = 10;
+    y += aproveitadaLines.length * lineHeight + 3;
+  });
 
-      const lines = {
-        ies: doc.splitTextToSize(origem, wIES),
-        cursada: doc.splitTextToSize(cursada, wCursada),
-        codCursada: doc.splitTextToSize(codCursada, wCodCursada),
-        nota: doc.splitTextToSize(nota, wNota),
-        cargaCursada: doc.splitTextToSize(cargaCursada, wCargaCursada),
-        tipo: doc.splitTextToSize(tipo.charAt(0).toUpperCase() + tipo.slice(1), wTipo),
-        aproveitada: doc.splitTextToSize(aproveitadaNome, wAproveitar),
-        codAproveitar: doc.splitTextToSize(codAproveitar, wCodAproveitar),
-        cargaAproveitar: doc.splitTextToSize(cargaAproveitada, wCargaAproveitar),
-      };
+  doc.save("aproveitamento_estudos.pdf");
+}
 
-      const maxLines = Math.max(...Object.values(lines).map(l => l.length));
-
-      for (let i = 0; i < maxLines; i++) {
-        doc.text(lines.ies[i] || "", xIES, y);
-        doc.text(lines.cursada[i] || "", xCursada, y);
-        doc.text(lines.codCursada[i] || "", xCodCursada, y);
-        doc.text(lines.nota[i] || "", xNota, y);
-        doc.text(lines.cargaCursada[i] || "", xCargaCursada, y);
-        doc.text(lines.tipo[i] || "", xTipo, y);
-        doc.text(lines.aproveitada[i] || "", xAproveitar, y);
-        doc.text(lines.codAproveitar[i] || "", xCodAproveitar, y);
-        doc.text(lines.cargaAproveitar[i] || "", xCargaAproveitar, y);
-        y += lineHeight;
-      }
-
-      y += 3;
-    });
-
-    doc.save("aproveitamento_estudos.pdf");
-  }
 
   // Variáveis globais para guardar os JSONs
   let disciplinasObrigatorias = [];
