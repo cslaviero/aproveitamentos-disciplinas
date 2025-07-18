@@ -54,71 +54,67 @@ document.addEventListener("DOMContentLoaded", () => {
     carregarDisciplinas();
   };
 
-  window.gerarPDF = async function() {
+  function gerarPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
-  const disciplinas = document.querySelectorAll(".disciplina");
-  let y = 15;
-  const lineHeight = 7;
-  const pageHeight = 280;
+  doc.setFontSize(12);
+  doc.text("Tabela de Disciplinas", 10, 10);
 
-  doc.setFontSize(9);
+  const tableTop = 20;
+  const rowHeight = 8;
+  let y = tableTop;
 
-  disciplinas.forEach((d, i) => {
-    if (y + 30 > pageHeight) {
-      doc.addPage();
-      y = 15;
-    }
+  // Cabeçalhos da tabela
+  doc.setFont(undefined, "bold");
+  doc.text("IES", 10, y);
+  doc.text("Disciplina Cursada", 45, y);
+  doc.text("Cód", 95, y);
+  doc.text("Nota", 115, y);
+  doc.text("Aproveitar como", 135, y);
+  doc.text("Cód", 175, y);
+  doc.setFont(undefined, "normal");
 
-    doc.setFont("helvetica", "bold");
-    doc.text(`Disciplina ${i + 1}:`, 10, y);
-    y += lineHeight;
+  y += 10;
 
-    doc.text("IES", 10, y);
-    doc.text("Disciplina Cursada", 35, y);
-    doc.text("Código", 85, y);
-    doc.text("Nota", 110, y);
-    doc.text("Aproveitar como", 130, y);
-    doc.text("Código", 175, y);
-    y += lineHeight;
+  const lineHeight = 8;
+  const linhaAltura = 4;
 
-    doc.setFont("helvetica", "normal");
+  disciplinas.forEach((disciplina) => {
+    const origem = disciplina.origem;
+    const cursada = disciplina.nomeCursada;
+    const codCursada = disciplina.codigoCursada;
+    const nota = disciplina.nota;
+    const aproveitada = disciplina.nomeAproveitar;
+    const codAproveitar = disciplina.codigoAproveitar;
 
-    const ies = d.querySelector(".ies-select").value;
-    const iesOutro = d.querySelector(".ies-outra").value;
-    const origem = ies === "Externa" ? iesOutro || "-" : "UFMT";
-
-    const cursada = d.querySelector(".disciplina-cursada").value || "-";
-    const codCursada = d.querySelector(".codigo-cursada").value || "-";
-    const nota = d.querySelector(".nota").value || "-";
-
-    const selectAproveitar = d.querySelector("select.disciplina-aproveitar");
-    const aproveitada = selectAproveitar.options[selectAproveitar.selectedIndex].text.split(" - ")[1] || "-";
-    const codAproveitar = d.querySelector(".codigo-aproveitar").value || "-";
-
-    const linhaAltura = 3; // quebra ajustada
-
-    const origemLines = doc.splitTextToSize(origem, 25);
+    const origemLines = doc.splitTextToSize(origem, 30);
     const cursadaLines = doc.splitTextToSize(cursada, 45);
     const aproveitadaLines = doc.splitTextToSize(aproveitada, 40);
 
     const maxLines = Math.max(origemLines.length, cursadaLines.length, aproveitadaLines.length);
 
     for (let j = 0; j < maxLines; j++) {
+      if (y > 270) {
+        doc.addPage();
+        y = 20;
+      }
+
       doc.text(origemLines[j] || "", 10, y);
-      doc.text(cursadaLines[j] || "", 35, y);
-      doc.text(j === 0 ? codCursada : "", 85, y);
-      doc.text(j === 0 ? nota : "", 110, y);
-      doc.text(aproveitadaLines[j] || "", 130, y);
+      doc.text(cursadaLines[j] || "", 45, y);
+      doc.text(j === 0 ? codCursada : "", 95, y);
+      doc.text(j === 0 ? nota : "", 115, y);
+      doc.text(aproveitadaLines[j] || "", 135, y);
       doc.text(j === 0 ? codAproveitar : "", 175, y);
+
       y += linhaAltura;
     }
 
-    y += lineHeight; // espaço entre blocos
+    y += 4; // espaço extra entre linhas de diferentes disciplinas
   });
 
-  doc.save("aproveitamento_estudos.pdf");
-};
+  doc.save("tabela_disciplinas.pdf");
+}
+
 
 });
