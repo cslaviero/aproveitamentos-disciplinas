@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     nova.querySelector(".ies-externa").style.display = "none";
     container.appendChild(nova);
 
-    // Atualizar o select recém criado com as disciplinas do JSON
+    // Atualizar os selects do novo bloco
     carregarDisciplinas();
   };
 
