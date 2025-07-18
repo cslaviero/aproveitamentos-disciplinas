@@ -213,7 +213,7 @@
         doc.text(aproveitarLines, xAproveitar, y);
         doc.text(codAproveitarLines, xCodAproveitar, y);
 
-        y += lineHeight * maxLines * 1.5;
+        y += lineHeight * maxLines + 5;  // 5 pixels extras
       });
 
       doc.save("aproveitamento_estudos.pdf");
