@@ -63,7 +63,6 @@
         "codigo": "114200328",
         "nome": "Introdução à Engenharia de Software"
     },
-
     {
         "codigo": "114200329",
         "nome": "Matemática Financeira"
@@ -100,7 +99,6 @@
         "codigo": "114200338",
         "nome": "Projeto e Análise de Algoritmos"
     },
-
     {
         "codigo": "114300021",
         "nome": "Sistemas Embarcados"
@@ -117,7 +115,6 @@
         "codigo": "114200342",
         "nome": "Projeto de Engenharia e Computação I"
     },      
-
     {
         "codigo": "114200343",
         "nome": "Redes de Computadores"
@@ -134,12 +131,10 @@
         "codigo": "114200399",
         "nome": "Projeto de Engenharia e Computação II"
     },  
-
     {
         "codigo": "114200344",
         "nome": "Teoria da Computação"
     }, 
-    
     {
         "codigo": "114100014",
         "nome": "Química Geral"
@@ -188,7 +183,6 @@
         "codigo": "114300013",
         "nome": "Física Experimental III"
     },
-    
     {
         "codigo": "",
         "nome": "Optativa I"
