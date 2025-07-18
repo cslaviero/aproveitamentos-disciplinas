@@ -1,5 +1,49 @@
 [
   {
+    "codigo": "114200345",
+    "nome": "Advanced Computer Networking",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200346",
+    "nome": "Advanced System Security ",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200347",
+    "nome": "Análise de Redes Sociais",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200348",
+    "nome": "Aprendizado de Máquina",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200402",
+    "nome": "Atividades Complementares",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200403",
+    "nome": "Atividades de Extensão",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200349",
+    "nome": " Automação Industrial II",
+    "carga_horaria": "64h"
+  },
+  {
+    "codigo": "114200350",
+    "nome": " Banco de Dados II",
+    "carga_horaria": "64h"
+  },
+
+  
+
+  
+  {
     "codigo": "114200365",
     "nome": "Interação Humano-Computador",
     "carga_horaria": "64h"
