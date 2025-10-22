@@ -1,68 +1,198 @@
-# 🎓 Processo de Aproveitamento de Disciplinas
+# Sistema de Aproveitamento de Estudos
 
-> 📘 Guia prático para solicitar o aproveitamento de estudos com base em disciplinas já cursadas em outras instituições ou cursos.
+Sistema web moderno para gerenciar solicitações de aproveitamento de disciplinas em universidades.
+
+## Características
+
+- **Multi-curso**: Suporte para múltiplos cursos através de arquivos JSON
+- **Interface Moderna**: Design card-based responsivo e intuitivo
+- **Anexos**: Sistema completo de upload de documentos comprobatórios
+- **Exportação Completa**: Gera arquivo .aprov (ZIP) com JSON, PDF e anexos
+- **Importação**: Restaura sessões salvas para continuar editando
+- **Persistência**: Salve seu progresso em qualquer momento
+
+## Estrutura do Projeto
+
+```
+aproveitamentos-disciplinas/
+├── index.html                       # Interface principal
+├── script.js                        # Lógica da aplicação
+├── styles.css                       # Estilos modernos
+├── cursos.json                      # Lista de cursos disponíveis
+├── cursos/                          # Dados dos cursos
+│   └── engenharia-computacao.json  # Disciplinas do curso
+├── PROCESSO.md                      # Guia do processo de aproveitamento
+└── README.md                        # Este arquivo
+```
+
+## Como Usar
+
+### 1. Iniciar o Sistema
+
+Abra o arquivo `index.html` em um navegador moderno ou use um servidor HTTP local:
+
+```bash
+# Usando Python 3
+python3 -m http.server 8000
+
+# Ou usando Node.js
+npx serve
+```
+
+Acesse: `http://localhost:8000`
+
+### 2. Fluxo de Trabalho
+
+1. **Selecione o Curso**
+   - Escolha seu curso no dropdown
+   - O sistema carrega automaticamente as disciplinas disponíveis
+
+2. **Adicione Disciplinas**
+   - Preencha os dados da disciplina cursada
+   - Selecione a disciplina equivalente no seu curso atual
+   - Adicione documentos comprobatórios (histórico, ementa, etc.)
+   - Use "Adicionar outra disciplina" para incluir mais
+
+3. **Salvar Progresso**
+   - **Salvar Sessão**: Baixa um JSON com seus dados (sem anexos)
+   - **Exportar Tudo**: Cria arquivo .aprov com JSON + PDF + anexos
+
+4. **Continuar Depois**
+   - Use "Importar .aprov" para restaurar uma sessão salva
+   - Todos os dados e anexos são restaurados automaticamente
+
+## Adicionar Novo Curso
+
+### 1. Criar JSON do Curso
+
+Crie um arquivo em `cursos/nome-do-curso.json`:
+
+```json
+{
+  "nome": "Nome do Curso",
+  "codigo": "nome-do-curso",
+  "disciplinas": {
+    "obrigatorias": [
+      {
+        "codigo": "12345678",
+        "nome": "Nome da Disciplina",
+        "carga_horaria": "64h"
+      }
+    ],
+    "optativas": [
+      {
+        "codigo": "87654321",
+        "nome": "Outra Disciplina",
+        "carga_horaria": "32h"
+      }
+    ]
+  }
+}
+```
+
+### 2. Registrar no cursos.json
+
+Adicione o curso em `cursos.json`:
+
+```json
+[
+  {
+    "id": "engenharia-computacao",
+    "nome": "Engenharia de Computação",
+    "arquivo": "cursos/engenharia-computacao.json"
+  },
+  {
+    "id": "nome-do-curso",
+    "nome": "Nome do Curso",
+    "arquivo": "cursos/nome-do-curso.json"
+  }
+]
+```
+
+## Formato do Arquivo .aprov
+
+O arquivo .aprov é um ZIP contendo:
+
+```
+aproveitamento_completo.aprov/
+├── dados.json              # Dados estruturados da sessão
+├── aproveitamento.pdf      # PDF formatado
+└── anexos/                 # Documentos comprobatórios
+    ├── disciplina_1/
+    │   ├── historico.pdf
+    │   └── ementa.pdf
+    └── disciplina_2/
+        └── certificado.pdf
+```
+
+## Tecnologias Utilizadas
+
+- **HTML5**: Estrutura semântica
+- **CSS3**: Design moderno com variáveis CSS
+- **JavaScript (ES6+)**: Lógica da aplicação
+- **jsPDF**: Geração de PDFs
+- **JSZip**: Manipulação de arquivos ZIP
+- **FileSaver.js**: Download de arquivos
+
+## Requisitos
+
+- Navegador moderno com suporte a:
+  - ES6+ (async/await, template literals)
+  - File API
+  - Fetch API
+  - CSS Grid/Flexbox
+
+## Navegadores Suportados
+
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 14+
+- Opera 76+
+
+## Desenvolvimento
+
+### Estrutura do Código JavaScript
+
+- **Estado Global**: Gerencia dados do curso e disciplinas
+- **Carregamento**: Funções para buscar JSONs
+- **UI**: Manipulação de disciplinas e formulários
+- **Anexos**: Sistema de upload e gerenciamento
+- **Export/Import**: ZIP com todos os dados
+- **PDF**: Geração com formatação profissional
+
+### Adicionar Funcionalidades
+
+O código é modular e bem comentado. Principais funções:
+
+```javascript
+// Adicionar disciplina
+adicionarDisciplina()
+
+// Coletar dados do formulário
+coletarDadosFormulario()
+
+// Exportar tudo
+exportarTudo()
+
+// Importar arquivo
+importarArquivo()
+```
+
+## Problemas Conhecidos
+
+- Arquivos muito grandes (>100MB) podem causar lentidão
+- Importação requer que o curso já esteja cadastrado no sistema
+
+## Licença
+
+Este projeto é de código aberto. Sinta-se livre para usar e modificar.
+
+## Contato
+
+Para dúvidas ou sugestões sobre o sistema, abra uma issue no repositório.
+
+Para informações sobre o processo de aproveitamento, consulte [PROCESSO.md](PROCESSO.md).
 
 ---
 
-## 🧭 Etapas do Processo
-
-1. ✅ **Reúna a Documentação Necessária:**
-    - 📄 Histórico Escolar autenticado (com notas e carga horária), deve aparecer o cabeçalho com o nome, RGA, nome da mãe, etc.
-    - 📘 Plano de Ensino ou Ementa das disciplinas homologadas e correspondentes ao período cursado (Ex. 2025/1)
-    - 🪪 Documento oficial da instituição de origem (carimbado e assinado), caso tenha feito fora da UFMT
-
-2. 📝 **Preencha o Formulário de Solicitação:**
-    - Informe claramente as disciplinas que deseja aproveitar
-    - Associe cada disciplina cursada com a equivalente do curso atual
-    - Não se esqueça de preencher seus dados pessoais corretamente
-
-3. 📤 **Submeta a Solicitação:**
-    - Envie o formulário e documentos pelo sistema acadêmico através de processo SEI
-
-4. ⏳ **Aguarde a Análise:**
-    - O colegiado do curso analisará a equivalência
-    - Pode haver solicitação de documentação adicional ou parecer de professor
-
-5. 📬 **Acompanhe o Resultado:**
-    - Você será notificado via portal acadêmico ou e-mail
-    - Caso aprovado ✅, a disciplina será lançada como aproveitada no histórico
-    - Caso indeferido ❌, será fornecida justificativa
-
----
-
-## 📁 Organização dos Arquivos
-
-| Pasta/Arquivo       | Descrição                                      |
-|---------------------|------------------------------------------------|
-| `formulario.pdf`    | Formulário de solicitação preenchido           |
-| `historico.pdf`     | Histórico escolar da instituição de origem     |
-| `ementas/`          | Pastas com as ementas das disciplinas cursadas |
-| `README.md`         | Este guia explicativo                          |
-
----
-
-## 🛠️ Dicas Importantes
-
-- 🔍 Certifique-se de que a carga horária da disciplina cursada seja **igual ou 75%** à disciplina do curso atual.
-- ✍️ O plano de ensino precisa conter **conteúdo programático detalhado**.
-- 🗓️ Envie a solicitação **dentro dos prazos** definidos pelo calendário acadêmico.
-- 📎 Junte todos os arquivos em **PDF** com nomes organizados.
-
----
-
-## 🤝 Contato
-
-Se tiver dúvidas, procure a coordenação do curso ou envie um e-mail para:
-
-📧 `sec-cegec.faeng@ufmt.br`
-
----
-
-## ✨ Exemplo visual de formulário preenchido
-
-![](./exemplos/formulario_preenchido.png)
-
----
-
-> 📢 **Atenção:** O aproveitamento de disciplinas é um direito do aluno, mas **depende de análise técnica**. Mantenha seus documentos organizados e atualizados para facilitar o processo.
-
+**Versão 2.0** - Sistema completo com multi-curso, anexos e persistência

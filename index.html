@@ -1,65 +1,173 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aproveitamento de Estudos</title>
+  <title>Sistema de Aproveitamento de Estudos</title>
+
+  <!-- Bibliotecas externas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h2>Solicitação de Aproveitamento de Estudos</h2>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1>Sistema de Aproveitamento de Estudos</h1>
+      <p class="subtitle">Organize suas solicitações de aproveitamento de disciplinas</p>
+    </header>
 
-  <div id="disciplinas">
-    <div class="disciplina">
-      <label>IES de origem:
-        <select class="ies-select" onchange="mostrarCampoIES(this)">
-          <option value="UFMT">UFMT</option>
-          <option value="Externa">Externa</option>
-        </select>
-      </label>
-      <label class="ies-externa" style="display:none;">
-        Qual instituição?
-        <input type="text" class="ies-outra" placeholder="Nome da instituição" />
-      </label>
+    <!-- Seleção de Curso -->
+    <section class="card curso-section" id="cursoSection">
+      <div class="card-header">
+        <h2>1. Selecione seu curso</h2>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label for="cursoSelect">Curso:</label>
+          <select id="cursoSelect" class="form-control">
+            <option value="">Carregando cursos...</option>
+          </select>
+        </div>
+        <div id="cursoInfo" class="info-box" style="display: none;">
+          <strong>Curso selecionado:</strong> <span id="cursoNome"></span>
+        </div>
+      </div>
+    </section>
 
-      <label>Disciplina cursada:
-        <input type="text" class="disciplina-cursada" placeholder="Ex: Álgebra Linear" />
-      </label>
-      <label>Código da cursada:
-        <input type="text" class="codigo-cursada" placeholder="Ex: MAT123" />
-      </label>
-      <label>Carga Horária cursada:
-        <input type="text" class="carga-horaria-cursada" placeholder="Ex: 60h" />
-      </label>
-      <label>Nota:
-        <input type="text" class="nota" placeholder="Ex: 8.5" />
-      </label>
+    <!-- Disciplinas -->
+    <section class="card disciplinas-section" id="disciplinasSection" style="display: none;">
+      <div class="card-header">
+        <h2>2. Adicione as disciplinas</h2>
+      </div>
+      <div class="card-body">
+        <div id="disciplinasContainer"></div>
 
-      <label>Tipo de disciplina a aproveitar:
-        <select class="tipo-disciplina" onchange="carregarDisciplinasPorTipo(this)">
-          <option value="">Selecione</option>
-          <option value="obrigatoria">Obrigatória</option>
-          <option value="optativa">Optativa</option>
-        </select>
-      </label>
+        <button class="btn btn-secondary" onclick="adicionarDisciplina()">
+          <span>➕</span> Adicionar outra disciplina
+        </button>
+      </div>
+    </section>
 
-      <label>Disciplina a aproveitar:
-        <select class="disciplina-aproveitar" onchange="atualizarDisciplina(this)">
-          <option value="">Selecione o tipo primeiro</option>
-        </select>
-      </label>
-      <label>Código disciplina a aproveitar:
-        <input type="text" readonly class="codigo-aproveitar" />
-      </label>
-    </div>
+    <!-- Ações -->
+    <section class="actions" id="actionsSection" style="display: none;">
+      <div class="actions-grid">
+        <button class="btn btn-primary" onclick="salvarSessao()">
+          <span>💾</span> Salvar Sessão
+        </button>
+
+        <button class="btn btn-success" onclick="exportarTudo()">
+          <span>📦</span> Exportar Tudo (.aprov)
+        </button>
+
+        <button class="btn btn-info" onclick="gerarPDF()">
+          <span>📄</span> Gerar PDF
+        </button>
+
+        <label class="btn btn-warning file-input-label">
+          <span>📁</span> Importar .aprov
+          <input type="file" id="importFile" accept=".aprov" onchange="importarArquivo()" style="display: none;" />
+        </label>
+      </div>
+    </section>
+
+    <!-- Template de Disciplina (hidden) -->
+    <template id="disciplinaTemplate">
+      <div class="disciplina-card">
+        <div class="disciplina-header">
+          <h3>Disciplina <span class="disciplina-numero"></span></h3>
+          <button class="btn-remove" onclick="removerDisciplina(this)" title="Remover disciplina">✕</button>
+        </div>
+
+        <div class="disciplina-body">
+          <!-- IES de origem -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>IES de origem:</label>
+              <select class="form-control ies-select" onchange="mostrarCampoIES(this)">
+                <option value="UFMT">UFMT</option>
+                <option value="Externa">Externa</option>
+              </select>
+            </div>
+
+            <div class="form-group ies-externa-group" style="display: none;">
+              <label>Nome da instituição:</label>
+              <input type="text" class="form-control ies-outra" placeholder="Ex: USP, UNICAMP..." />
+            </div>
+          </div>
+
+          <!-- Disciplina cursada -->
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label>Disciplina cursada:</label>
+              <input type="text" class="form-control disciplina-cursada" placeholder="Ex: Álgebra Linear" />
+            </div>
+
+            <div class="form-group">
+              <label>Código:</label>
+              <input type="text" class="form-control codigo-cursada" placeholder="Ex: MAT123" />
+            </div>
+          </div>
+
+          <!-- Carga horária e nota -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>Carga Horária:</label>
+              <input type="text" class="form-control carga-horaria-cursada" placeholder="Ex: 60h" />
+            </div>
+
+            <div class="form-group">
+              <label>Nota:</label>
+              <input type="text" class="form-control nota" placeholder="Ex: 8.5" />
+            </div>
+          </div>
+
+          <!-- Aproveitamento -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tipo de disciplina:</label>
+              <select class="form-control tipo-disciplina" onchange="carregarDisciplinasPorTipo(this)">
+                <option value="">Selecione</option>
+                <option value="obrigatorias">Obrigatória</option>
+                <option value="optativas">Optativa</option>
+              </select>
+            </div>
+
+            <div class="form-group flex-2">
+              <label>Aproveitar como:</label>
+              <select class="form-control disciplina-aproveitar" onchange="atualizarDisciplina(this)">
+                <option value="">Selecione o tipo primeiro</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label>Código da disciplina:</label>
+              <input type="text" class="form-control codigo-aproveitar" readonly />
+            </div>
+          </div>
+
+          <!-- Anexos -->
+          <div class="anexos-section">
+            <label class="anexos-label">Documentos comprobatórios:</label>
+            <div class="anexos-area">
+              <label class="btn-anexo">
+                <span>📎</span> Adicionar arquivo
+                <input type="file" multiple onchange="adicionarAnexos(this)" style="display: none;" />
+              </label>
+              <div class="anexos-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
   </div>
 
-  <button onclick="addDisciplina()">Adicionar outra disciplina</button>
-  <button onclick="gerarPDF()">Gerar PDF</button>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
