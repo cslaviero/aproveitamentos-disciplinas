@@ -10,6 +10,26 @@ const state = {
 };
 
 // ====================================
+// Toast Notifications
+// ====================================
+function showToast(message, type = 'success') {
+  const toastId = type === 'success' ? 'successToast' : 'errorToast';
+  const messageId = type === 'success' ? 'successToastMessage' : 'errorToastMessage';
+
+  const toastElement = document.getElementById(toastId);
+  const messageElement = document.getElementById(messageId);
+
+  messageElement.textContent = message;
+
+  const toast = new bootstrap.Toast(toastElement, {
+    autohide: true,
+    delay: 3000
+  });
+
+  toast.show();
+}
+
+// ====================================
 // Inicialização
 // ====================================
 window.addEventListener('DOMContentLoaded', async () => {
@@ -49,7 +69,7 @@ async function onCursoChange(event) {
   const cursoId = event.target.value;
 
   if (!cursoId) {
-    document.getElementById('cursoInfo').style.display = 'none';
+    document.getElementById('cursoInfo').classList.add('d-none');
     document.getElementById('disciplinasSection').style.display = 'none';
     document.getElementById('actionsSection').style.display = 'none';
     return;
@@ -66,7 +86,7 @@ async function onCursoChange(event) {
     state.disciplinasCurso = dadosCurso.disciplinas;
 
     document.getElementById('cursoNome').textContent = dadosCurso.nome;
-    document.getElementById('cursoInfo').style.display = 'block';
+    document.getElementById('cursoInfo').classList.remove('d-none');
     document.getElementById('disciplinasSection').style.display = 'block';
     document.getElementById('actionsSection').style.display = 'block';
 
@@ -78,9 +98,11 @@ async function onCursoChange(event) {
     // Adicionar primeira disciplina
     adicionarDisciplina();
 
+    showToast('Curso carregado com sucesso!', 'success');
+
   } catch (error) {
     console.error('Erro ao carregar dados do curso:', error);
-    alert('Erro ao carregar dados do curso.');
+    showToast('Erro ao carregar dados do curso.', 'error');
   }
 }
 
@@ -114,7 +136,7 @@ function removerDisciplina(button) {
   const id = parseInt(row.dataset.id);
 
   if (document.querySelectorAll('.disciplina-row').length <= 1) {
-    alert('É necessário ter pelo menos uma disciplina.');
+    showToast('É necessário ter pelo menos uma disciplina.', 'error');
     return;
   }
 
@@ -128,6 +150,7 @@ function removerDisciplina(button) {
   row.remove();
 
   atualizarNumerosDisciplinas();
+  showToast('Disciplina removida com sucesso!', 'success');
 }
 
 function atualizarNumerosDisciplinas() {
@@ -416,10 +439,10 @@ function salvarSessao() {
 
     URL.revokeObjectURL(url);
 
-    alert('Sessão salva com sucesso!');
+    showToast('Sessão salva com sucesso!', 'success');
   } catch (error) {
     console.error('Erro ao salvar sessão:', error);
-    alert('Erro ao salvar sessão.');
+    showToast('Erro ao salvar sessão.', 'error');
   }
 }
 
@@ -509,11 +532,11 @@ async function gerarPDF() {
     }
 
     doc.save('aproveitamento_estudos.pdf');
-    alert('PDF gerado com sucesso!');
+    showToast('PDF gerado com sucesso!', 'success');
 
   } catch (error) {
     console.error('Erro ao gerar PDF:', error);
-    alert('Erro ao gerar PDF: ' + error.message);
+    showToast('Erro ao gerar PDF: ' + error.message, 'error');
   }
 }
 
@@ -547,11 +570,11 @@ async function exportarTudo() {
     const content = await zip.generateAsync({ type: 'blob' });
     saveAs(content, 'aproveitamento_completo.aprov');
 
-    alert('Exportação completa realizada com sucesso!');
+    showToast('Exportação completa realizada com sucesso!', 'success');
 
   } catch (error) {
     console.error('Erro ao exportar:', error);
-    alert('Erro ao exportar: ' + error.message);
+    showToast('Erro ao exportar: ' + error.message, 'error');
   }
 }
 
@@ -727,11 +750,11 @@ async function importarArquivo() {
       }
     }
 
-    alert('Arquivo importado com sucesso!');
+    showToast('Arquivo importado com sucesso!', 'success');
 
   } catch (error) {
     console.error('Erro ao importar arquivo:', error);
-    alert('Erro ao importar arquivo: ' + error.message);
+    showToast('Erro ao importar arquivo: ' + error.message, 'error');
   } finally {
     input.value = '';
   }
