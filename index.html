@@ -136,11 +136,18 @@
               </select>
             </div>
 
-            <div class="form-group flex-2">
+            <div class="form-group flex-2 autocomplete-wrapper">
               <label>Aproveitar como:</label>
-              <select class="form-control disciplina-aproveitar" onchange="atualizarDisciplina(this)">
-                <option value="">Selecione o tipo primeiro</option>
-              </select>
+              <input
+                type="text"
+                class="form-control disciplina-aproveitar-input"
+                placeholder="Digite para buscar a disciplina..."
+                autocomplete="off"
+                oninput="filtrarDisciplinas(this)"
+                onfocus="mostrarSugestoes(this)"
+              />
+              <input type="hidden" class="disciplina-aproveitar-codigo" />
+              <div class="autocomplete-suggestions"></div>
             </div>
           </div>
 

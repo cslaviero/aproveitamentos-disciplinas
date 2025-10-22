@@ -447,6 +447,71 @@ body {
 }
 
 /* ====================================
+   Autocomplete
+   ==================================== */
+.autocomplete-wrapper {
+  position: relative;
+}
+
+.autocomplete-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 2px solid var(--border-color);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+  box-shadow: var(--shadow-lg);
+}
+
+.autocomplete-suggestions.show {
+  display: block;
+}
+
+.autocomplete-suggestion-item {
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.95rem;
+}
+
+.autocomplete-suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-suggestion-item:hover {
+  background: var(--bg-color);
+}
+
+.autocomplete-suggestion-item.selected {
+  background: var(--primary-color);
+  color: white;
+}
+
+.autocomplete-no-results {
+  padding: 12px 14px;
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: center;
+}
+
+.autocomplete-suggestion-highlight {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.autocomplete-suggestion-item.selected .autocomplete-suggestion-highlight {
+  color: white;
+  font-weight: 700;
+}
+
+/* ====================================
    Utilitários
    ==================================== */
 .text-center {
