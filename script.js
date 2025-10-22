@@ -73,7 +73,7 @@ async function onCursoChange(event) {
     // Limpar disciplinas anteriores se houver
     state.disciplinas = [];
     state.proximoId = 1;
-    document.getElementById('disciplinasContainer').innerHTML = '';
+    document.getElementById('disciplinasTableBody').innerHTML = '';
 
     // Adicionar primeira disciplina
     adicionarDisciplina();
@@ -91,14 +91,14 @@ function adicionarDisciplina() {
   const template = document.getElementById('disciplinaTemplate');
   const clone = template.content.cloneNode(true);
 
-  const disciplinaCard = clone.querySelector('.disciplina-card');
+  const disciplinaRow = clone.querySelector('.disciplina-row');
   const disciplinaId = state.proximoId++;
-  disciplinaCard.dataset.id = disciplinaId;
+  disciplinaRow.dataset.id = disciplinaId;
 
-  clone.querySelector('.disciplina-numero').textContent = `#${disciplinaId}`;
+  clone.querySelector('.disciplina-numero').textContent = disciplinaId;
 
-  // Adicionar ao container
-  document.getElementById('disciplinasContainer').appendChild(clone);
+  // Adicionar ao tbody
+  document.getElementById('disciplinasTableBody').appendChild(clone);
 
   // Adicionar ao estado
   state.disciplinas.push({
@@ -110,10 +110,10 @@ function adicionarDisciplina() {
 }
 
 function removerDisciplina(button) {
-  const card = button.closest('.disciplina-card');
-  const id = parseInt(card.dataset.id);
+  const row = button.closest('.disciplina-row');
+  const id = parseInt(row.dataset.id);
 
-  if (document.querySelectorAll('.disciplina-card').length <= 1) {
+  if (document.querySelectorAll('.disciplina-row').length <= 1) {
     alert('É necessário ter pelo menos uma disciplina.');
     return;
   }
@@ -125,15 +125,15 @@ function removerDisciplina(button) {
   }
 
   // Remover do DOM
-  card.remove();
+  row.remove();
 
   atualizarNumerosDisciplinas();
 }
 
 function atualizarNumerosDisciplinas() {
-  const cards = document.querySelectorAll('.disciplina-card');
-  cards.forEach((card, index) => {
-    card.querySelector('.disciplina-numero').textContent = `#${index + 1}`;
+  const rows = document.querySelectorAll('.disciplina-row');
+  rows.forEach((row, index) => {
+    row.querySelector('.disciplina-numero').textContent = index + 1;
   });
 }
 
@@ -141,23 +141,23 @@ function atualizarNumerosDisciplinas() {
 // Funções de Formulário
 // ====================================
 function mostrarCampoIES(select) {
-  const card = select.closest('.disciplina-card');
-  const externaGroup = card.querySelector('.ies-externa-group');
+  const row = select.closest('.disciplina-row');
+  const inputIesOutra = row.querySelector('.ies-outra');
 
   if (select.value === 'Externa') {
-    externaGroup.style.display = 'block';
+    inputIesOutra.style.display = 'block';
   } else {
-    externaGroup.style.display = 'none';
-    externaGroup.querySelector('input').value = '';
+    inputIesOutra.style.display = 'none';
+    inputIesOutra.value = '';
   }
 }
 
 function carregarDisciplinasPorTipo(selectTipo) {
   const tipo = selectTipo.value;
-  const card = selectTipo.closest('.disciplina-card');
-  const inputDisciplina = card.querySelector('.disciplina-aproveitar-input');
-  const inputCodigo = card.querySelector('.disciplina-aproveitar-codigo');
-  const codigoAproveitar = card.querySelector('.codigo-aproveitar');
+  const row = selectTipo.closest('.disciplina-row');
+  const inputDisciplina = row.querySelector('.disciplina-aproveitar-input');
+  const inputCodigo = row.querySelector('.disciplina-aproveitar-codigo');
+  const codigoAproveitar = row.querySelector('.codigo-aproveitar');
 
   if (!tipo || !state.disciplinasCurso) {
     inputDisciplina.placeholder = 'Selecione o tipo primeiro';
@@ -170,10 +170,10 @@ function carregarDisciplinasPorTipo(selectTipo) {
 
   const disciplinas = state.disciplinasCurso[tipo] || [];
 
-  // Armazenar disciplinas no card para uso posterior
-  card.dataset.disciplinas = JSON.stringify(disciplinas);
+  // Armazenar disciplinas na row para uso posterior
+  row.dataset.disciplinas = JSON.stringify(disciplinas);
 
-  inputDisciplina.placeholder = 'Digite para buscar a disciplina...';
+  inputDisciplina.placeholder = 'Buscar disciplina...';
   inputDisciplina.disabled = false;
   inputDisciplina.value = '';
   inputCodigo.value = '';
@@ -181,20 +181,20 @@ function carregarDisciplinasPorTipo(selectTipo) {
 }
 
 function filtrarDisciplinas(input) {
-  const card = input.closest('.disciplina-card');
-  const suggestionsDiv = card.querySelector('.autocomplete-suggestions');
+  const row = input.closest('.disciplina-row');
+  const suggestionsDiv = row.querySelector('.autocomplete-suggestions');
   const query = input.value.toLowerCase().trim();
 
-  if (!card.dataset.disciplinas) {
+  if (!row.dataset.disciplinas) {
     suggestionsDiv.classList.remove('show');
     return;
   }
 
-  const disciplinas = JSON.parse(card.dataset.disciplinas);
+  const disciplinas = JSON.parse(row.dataset.disciplinas);
 
   if (!query) {
     // Mostrar todas se o campo estiver vazio mas focado
-    renderizarSugestoes(suggestionsDiv, disciplinas, '', card);
+    renderizarSugestoes(suggestionsDiv, disciplinas, '', row);
     return;
   }
 
@@ -203,31 +203,31 @@ function filtrarDisciplinas(input) {
     d.nome.toLowerCase().includes(query)
   );
 
-  renderizarSugestoes(suggestionsDiv, filtradas, query, card);
+  renderizarSugestoes(suggestionsDiv, filtradas, query, row);
 }
 
 function mostrarSugestoes(input) {
-  const card = input.closest('.disciplina-card');
-  const suggestionsDiv = card.querySelector('.autocomplete-suggestions');
+  const row = input.closest('.disciplina-row');
+  const suggestionsDiv = row.querySelector('.autocomplete-suggestions');
 
-  if (!card.dataset.disciplinas) {
+  if (!row.dataset.disciplinas) {
     return;
   }
 
-  const disciplinas = JSON.parse(card.dataset.disciplinas);
+  const disciplinas = JSON.parse(row.dataset.disciplinas);
   const query = input.value.toLowerCase().trim();
 
   if (query) {
     const filtradas = disciplinas.filter(d =>
       d.nome.toLowerCase().includes(query)
     );
-    renderizarSugestoes(suggestionsDiv, filtradas, query, card);
+    renderizarSugestoes(suggestionsDiv, filtradas, query, row);
   } else {
-    renderizarSugestoes(suggestionsDiv, disciplinas, '', card);
+    renderizarSugestoes(suggestionsDiv, disciplinas, '', row);
   }
 }
 
-function renderizarSugestoes(suggestionsDiv, disciplinas, query, card) {
+function renderizarSugestoes(suggestionsDiv, disciplinas, query, row) {
   suggestionsDiv.innerHTML = '';
 
   if (disciplinas.length === 0) {
@@ -253,7 +253,7 @@ function renderizarSugestoes(suggestionsDiv, disciplinas, query, card) {
     item.innerHTML = nomeHTML;
 
     item.addEventListener('click', () => {
-      selecionarDisciplina(card, d.codigo, d.nome, d.carga_horaria);
+      selecionarDisciplina(row, d.codigo, d.nome, d.carga_horaria);
     });
 
     suggestionsDiv.appendChild(item);
@@ -262,11 +262,11 @@ function renderizarSugestoes(suggestionsDiv, disciplinas, query, card) {
   suggestionsDiv.classList.add('show');
 }
 
-function selecionarDisciplina(card, codigo, nome, cargaHoraria) {
-  const inputDisciplina = card.querySelector('.disciplina-aproveitar-input');
-  const inputCodigo = card.querySelector('.disciplina-aproveitar-codigo');
-  const codigoAproveitar = card.querySelector('.codigo-aproveitar');
-  const suggestionsDiv = card.querySelector('.autocomplete-suggestions');
+function selecionarDisciplina(row, codigo, nome, cargaHoraria) {
+  const inputDisciplina = row.querySelector('.disciplina-aproveitar-input');
+  const inputCodigo = row.querySelector('.disciplina-aproveitar-codigo');
+  const codigoAproveitar = row.querySelector('.codigo-aproveitar');
+  const suggestionsDiv = row.querySelector('.autocomplete-suggestions');
 
   inputDisciplina.value = nome;
   inputCodigo.value = codigo;
@@ -290,14 +290,15 @@ document.addEventListener('click', (e) => {
 // Sistema de Anexos
 // ====================================
 function adicionarAnexos(input) {
-  const card = input.closest('.disciplina-card');
-  const id = parseInt(card.dataset.id);
+  const row = input.closest('.disciplina-row');
+  const id = parseInt(row.dataset.id);
   const disciplina = state.disciplinas.find(d => d.id === id);
 
   if (!disciplina) return;
 
   const files = Array.from(input.files);
-  const anexosList = card.querySelector('.anexos-list');
+  const anexosList = row.querySelector('.anexos-list-mini');
+  const anexosCount = row.querySelector('.anexos-count');
 
   files.forEach(file => {
     // Adicionar ao estado
@@ -307,20 +308,29 @@ function adicionarAnexos(input) {
       tamanho: file.size,
       file: file
     });
-
-    // Adicionar ao DOM
-    const anexoItem = document.createElement('div');
-    anexoItem.className = 'anexo-item';
-    anexoItem.innerHTML = `
-      <span>📄</span>
-      <span class="anexo-nome">${file.name}</span>
-      <button class="anexo-remove" onclick="removerAnexo(this, ${id}, '${file.name}')" title="Remover">×</button>
-    `;
-    anexosList.appendChild(anexoItem);
   });
+
+  // Atualizar contador e lista
+  atualizarAnexosUI(row, disciplina.anexos, id);
 
   // Limpar input
   input.value = '';
+}
+
+function atualizarAnexosUI(row, anexos, disciplinaId) {
+  const anexosList = row.querySelector('.anexos-list-mini');
+  const anexosCount = row.querySelector('.anexos-count');
+
+  anexosCount.textContent = `(${anexos.length})`;
+
+  anexosList.innerHTML = '';
+  anexos.forEach(anexo => {
+    const item = document.createElement('div');
+    item.className = 'anexo-item-mini';
+    item.textContent = anexo.nome;
+    item.title = anexo.nome;
+    anexosList.appendChild(item);
+  });
 }
 
 function removerAnexo(button, disciplinaId, nomeArquivo) {
@@ -341,21 +351,21 @@ function removerAnexo(button, disciplinaId, nomeArquivo) {
 // Coleta de Dados do Formulário
 // ====================================
 function coletarDadosFormulario() {
-  const cards = document.querySelectorAll('.disciplina-card');
+  const rows = document.querySelectorAll('.disciplina-row');
   const dados = {
     curso: state.cursoSelecionado,
     disciplinas: []
   };
 
-  cards.forEach((card, index) => {
-    const id = parseInt(card.dataset.id);
+  rows.forEach((row, index) => {
+    const id = parseInt(row.dataset.id);
     const disciplinaState = state.disciplinas.find(d => d.id === id);
 
-    const iesSelect = card.querySelector('.ies-select').value;
-    const iesOutra = card.querySelector('.ies-outra').value;
+    const iesSelect = row.querySelector('.ies-select').value;
+    const iesOutra = row.querySelector('.ies-outra').value;
 
-    const inputAproveitar = card.querySelector('.disciplina-aproveitar-input');
-    const inputCodigo = card.querySelector('.disciplina-aproveitar-codigo');
+    const inputAproveitar = row.querySelector('.disciplina-aproveitar-input');
+    const inputCodigo = row.querySelector('.disciplina-aproveitar-codigo');
 
     const disciplina = {
       numero: index + 1,
@@ -365,13 +375,13 @@ function coletarDadosFormulario() {
         nome: iesSelect === 'Externa' ? iesOutra : 'UFMT'
       },
       cursada: {
-        nome: card.querySelector('.disciplina-cursada').value,
-        codigo: card.querySelector('.codigo-cursada').value,
-        cargaHoraria: card.querySelector('.carga-horaria-cursada').value,
-        nota: card.querySelector('.nota').value
+        nome: row.querySelector('.disciplina-cursada').value,
+        codigo: row.querySelector('.codigo-cursada').value,
+        cargaHoraria: row.querySelector('.carga-horaria-cursada').value,
+        nota: row.querySelector('.nota').value
       },
       aproveitamento: {
-        tipo: card.querySelector('.tipo-disciplina').value,
+        tipo: row.querySelector('.tipo-disciplina').value,
         codigo: inputCodigo ? inputCodigo.value : '',
         nome: inputAproveitar ? inputAproveitar.value : '',
         cargaHoraria: inputCodigo ? inputCodigo.dataset.cargaHoraria : ''
@@ -658,29 +668,29 @@ async function importarArquivo() {
     // Limpar disciplinas atuais
     state.disciplinas = [];
     state.proximoId = 1;
-    document.getElementById('disciplinasContainer').innerHTML = '';
+    document.getElementById('disciplinasTableBody').innerHTML = '';
 
     // Restaurar disciplinas
     for (const discData of dados.disciplinas) {
       adicionarDisciplina();
-      const card = document.querySelector(`.disciplina-card[data-id="${state.proximoId - 1}"]`);
+      const row = document.querySelector(`.disciplina-row[data-id="${state.proximoId - 1}"]`);
 
-      if (!card) continue;
+      if (!row) continue;
 
       // Preencher campos
-      card.querySelector('.ies-select').value = discData.ies.tipo;
+      row.querySelector('.ies-select').value = discData.ies.tipo;
       if (discData.ies.tipo === 'Externa') {
-        card.querySelector('.ies-externa-group').style.display = 'block';
-        card.querySelector('.ies-outra').value = discData.ies.nome;
+        row.querySelector('.ies-outra').style.display = 'block';
+        row.querySelector('.ies-outra').value = discData.ies.nome;
       }
 
-      card.querySelector('.disciplina-cursada').value = discData.cursada.nome;
-      card.querySelector('.codigo-cursada').value = discData.cursada.codigo;
-      card.querySelector('.carga-horaria-cursada').value = discData.cursada.cargaHoraria;
-      card.querySelector('.nota').value = discData.cursada.nota;
+      row.querySelector('.disciplina-cursada').value = discData.cursada.nome;
+      row.querySelector('.codigo-cursada').value = discData.cursada.codigo;
+      row.querySelector('.carga-horaria-cursada').value = discData.cursada.cargaHoraria;
+      row.querySelector('.nota').value = discData.cursada.nota;
 
       // Carregar tipo de disciplina
-      const tipoSelect = card.querySelector('.tipo-disciplina');
+      const tipoSelect = row.querySelector('.tipo-disciplina');
       tipoSelect.value = discData.aproveitamento.tipo;
 
       // Aguardar carregamento das disciplinas
@@ -688,7 +698,7 @@ async function importarArquivo() {
       await new Promise(resolve => setTimeout(resolve, 300));
 
       // Selecionar disciplina usando o novo sistema
-      selecionarDisciplina(card, discData.aproveitamento.codigo, discData.aproveitamento.nome, discData.aproveitamento.cargaHoraria);
+      selecionarDisciplina(row, discData.aproveitamento.codigo, discData.aproveitamento.nome, discData.aproveitamento.cargaHoraria);
 
       // Restaurar anexos
       if (discData.anexos && discData.anexos.length > 0) {
@@ -707,20 +717,13 @@ async function importarArquivo() {
               tamanho: file.size,
               file: file
             });
-
-            const anexosList = card.querySelector('.anexos-list');
-            const anexoItem = document.createElement('div');
-            anexoItem.className = 'anexo-item';
-            anexoItem.innerHTML = `
-              <span>📄</span>
-              <span class="anexo-nome">${file.name}</span>
-              <button class="anexo-remove" onclick="removerAnexo(this, ${discId}, '${file.name}')" title="Remover">×</button>
-            `;
-            anexosList.appendChild(anexoItem);
           } catch (err) {
             console.warn('Anexo não encontrado:', anexoData.nome);
           }
         }
+
+        // Atualizar UI de anexos
+        atualizarAnexosUI(row, disciplinaState.anexos, discId);
       }
     }
 

@@ -44,10 +44,31 @@
         <h2>2. Adicione as disciplinas</h2>
       </div>
       <div class="card-body">
-        <div id="disciplinasContainer"></div>
+        <div class="table-wrapper">
+          <table class="disciplinas-table" id="disciplinasTable">
+            <thead>
+              <tr>
+                <th class="col-num">#</th>
+                <th class="col-ies">IES</th>
+                <th class="col-disciplina">Disciplina Cursada</th>
+                <th class="col-codigo-small">Código</th>
+                <th class="col-ch-small">C.H.</th>
+                <th class="col-nota-small">Nota</th>
+                <th class="col-tipo">Tipo</th>
+                <th class="col-aproveitar">Aproveitar Como</th>
+                <th class="col-codigo-small">Código</th>
+                <th class="col-anexos">Anexos</th>
+                <th class="col-actions">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="disciplinasTableBody">
+              <!-- Linhas serão inseridas aqui -->
+            </tbody>
+          </table>
+        </div>
 
-        <button class="btn btn-secondary" onclick="adicionarDisciplina()">
-          <span>➕</span> Adicionar outra disciplina
+        <button class="btn btn-secondary mt-3" onclick="adicionarDisciplina()">
+          <span>➕</span> Adicionar disciplina
         </button>
       </div>
     </section>
@@ -74,103 +95,76 @@
       </div>
     </section>
 
-    <!-- Template de Disciplina (hidden) -->
+    <!-- Template de Linha de Disciplina (hidden) -->
     <template id="disciplinaTemplate">
-      <div class="disciplina-card">
-        <div class="disciplina-header">
-          <h3>Disciplina <span class="disciplina-numero"></span></h3>
-          <button class="btn-remove" onclick="removerDisciplina(this)" title="Remover disciplina">✕</button>
-        </div>
+      <tr class="disciplina-row">
+        <td class="col-num">
+          <span class="disciplina-numero"></span>
+        </td>
 
-        <div class="disciplina-body">
-          <!-- IES de origem -->
-          <div class="form-row">
-            <div class="form-group">
-              <label>IES de origem:</label>
-              <select class="form-control ies-select" onchange="mostrarCampoIES(this)">
-                <option value="UFMT">UFMT</option>
-                <option value="Externa">Externa</option>
-              </select>
-            </div>
+        <td class="col-ies">
+          <select class="input-table ies-select" onchange="mostrarCampoIES(this)">
+            <option value="UFMT">UFMT</option>
+            <option value="Externa">Externa</option>
+          </select>
+          <input type="text" class="input-table ies-outra" placeholder="Nome IES..." style="display:none; margin-top:4px;" />
+        </td>
 
-            <div class="form-group ies-externa-group" style="display: none;">
-              <label>Nome da instituição:</label>
-              <input type="text" class="form-control ies-outra" placeholder="Ex: USP, UNICAMP..." />
-            </div>
-          </div>
+        <td class="col-disciplina">
+          <input type="text" class="input-table disciplina-cursada" placeholder="Nome da disciplina..." />
+        </td>
 
-          <!-- Disciplina cursada -->
-          <div class="form-row">
-            <div class="form-group flex-2">
-              <label>Disciplina cursada:</label>
-              <input type="text" class="form-control disciplina-cursada" placeholder="Ex: Álgebra Linear" />
-            </div>
+        <td class="col-codigo-small">
+          <input type="text" class="input-table codigo-cursada" placeholder="Código" />
+        </td>
 
-            <div class="form-group">
-              <label>Código:</label>
-              <input type="text" class="form-control codigo-cursada" placeholder="Ex: MAT123" />
-            </div>
-          </div>
+        <td class="col-ch-small">
+          <input type="text" class="input-table carga-horaria-cursada" placeholder="64h" />
+        </td>
 
-          <!-- Carga horária e nota -->
-          <div class="form-row">
-            <div class="form-group">
-              <label>Carga Horária:</label>
-              <input type="text" class="form-control carga-horaria-cursada" placeholder="Ex: 60h" />
-            </div>
+        <td class="col-nota-small">
+          <input type="text" class="input-table nota" placeholder="7.0" />
+        </td>
 
-            <div class="form-group">
-              <label>Nota:</label>
-              <input type="text" class="form-control nota" placeholder="Ex: 8.5" />
-            </div>
-          </div>
+        <td class="col-tipo">
+          <select class="input-table tipo-disciplina" onchange="carregarDisciplinasPorTipo(this)">
+            <option value="">Selecione</option>
+            <option value="obrigatorias">Obrigatória</option>
+            <option value="optativas">Optativa</option>
+          </select>
+        </td>
 
-          <!-- Aproveitamento -->
-          <div class="form-row">
-            <div class="form-group">
-              <label>Tipo de disciplina:</label>
-              <select class="form-control tipo-disciplina" onchange="carregarDisciplinasPorTipo(this)">
-                <option value="">Selecione</option>
-                <option value="obrigatorias">Obrigatória</option>
-                <option value="optativas">Optativa</option>
-              </select>
-            </div>
+        <td class="col-aproveitar autocomplete-wrapper">
+          <input
+            type="text"
+            class="input-table disciplina-aproveitar-input"
+            placeholder="Buscar disciplina..."
+            autocomplete="off"
+            oninput="filtrarDisciplinas(this)"
+            onfocus="mostrarSugestoes(this)"
+          />
+          <input type="hidden" class="disciplina-aproveitar-codigo" />
+          <div class="autocomplete-suggestions"></div>
+        </td>
 
-            <div class="form-group flex-2 autocomplete-wrapper">
-              <label>Aproveitar como:</label>
-              <input
-                type="text"
-                class="form-control disciplina-aproveitar-input"
-                placeholder="Digite para buscar a disciplina..."
-                autocomplete="off"
-                oninput="filtrarDisciplinas(this)"
-                onfocus="mostrarSugestoes(this)"
-              />
-              <input type="hidden" class="disciplina-aproveitar-codigo" />
-              <div class="autocomplete-suggestions"></div>
-            </div>
-          </div>
+        <td class="col-codigo-small">
+          <input type="text" class="input-table codigo-aproveitar" readonly />
+        </td>
 
-          <div class="form-row">
-            <div class="form-group flex-2">
-              <label>Código da disciplina:</label>
-              <input type="text" class="form-control codigo-aproveitar" readonly />
-            </div>
-          </div>
+        <td class="col-anexos">
+          <label class="btn-anexo-mini">
+            <span>📎</span> <span class="anexos-count">(0)</span>
+            <input type="file" multiple onchange="adicionarAnexos(this)" style="display: none;" />
+          </label>
+          <div class="anexos-list-mini"></div>
+        </td>
 
-          <!-- Anexos -->
-          <div class="anexos-section">
-            <label class="anexos-label">Documentos comprobatórios:</label>
-            <div class="anexos-area">
-              <label class="btn-anexo">
-                <span>📎</span> Adicionar arquivo
-                <input type="file" multiple onchange="adicionarAnexos(this)" style="display: none;" />
-              </label>
-              <div class="anexos-list"></div>
-            </div>
-          </div>
-        </div>
-      </div>
+        <td class="col-actions">
+          <button class="btn-icon btn-remove-row" onclick="removerDisciplina(this)" title="Remover">
+            ✕
+          </button>
+        </td>
+      </tr>
     </template>
 
   </div>
